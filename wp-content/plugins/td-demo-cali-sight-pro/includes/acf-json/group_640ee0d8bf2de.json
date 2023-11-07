@@ -1,0 +1,393 @@
+{
+    "key": "group_640ee0d8bf2de",
+    "title": "tourism fields",
+    "fields": [
+        {
+            "key": "field_640ee1106a727",
+            "label": "Price",
+            "name": "tdcf_price",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_641062221a552",
+            "label": "Email",
+            "name": "tdcf_email",
+            "aria-label": "",
+            "type": "email",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_641062341a553",
+            "label": "Phone Number",
+            "name": "tdcf_phone_number",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_641010c85f0b4",
+            "label": "Website",
+            "name": "tdcf_website",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_641010615f0b3",
+            "label": "Booking",
+            "name": "tdcf_booking",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_640ee0d96a726",
+            "label": "Location",
+            "name": "tdcf_location",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_640eed1a7bd30",
+            "label": "Address",
+            "name": "tdcf_address",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_640ee1b66a728",
+            "label": "Cancellation",
+            "name": "tdcf_cancellation",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Free cancellation available": "Free cancellation available",
+                "No cancellation necessary": "No cancellation necessary",
+                "No cancellation available": "No cancellation available"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_640ee1f36a729",
+            "label": "Time Needed",
+            "name": "tdcf_time_needed",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_640ee2366a72a",
+            "label": "Voucher",
+            "name": "tdcf_voucher",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Mobile Voucher": "Mobile Voucher",
+                "Physical Voucher": "Physical Voucher",
+                "No Voucher necessary": "No Voucher necessary"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_640ee2516a72b",
+            "label": "Parking",
+            "name": "tdcf_parking",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "No Parking available": "No Parking available",
+                "Free Parking": "Free Parking",
+                "Paid Parking": "Paid Parking"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_640ee27a6a72c",
+            "label": "Details",
+            "name": "tdcf_details",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_640ee2a36a72d",
+            "label": "Cleaning",
+            "name": "tdcf_cleaning",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Every surface cleaned and disinfected": "Every surface cleaned and disinfected",
+                "Vehicles cleaned with disinfectants": "Vehicles cleaned with disinfectants",
+                "Staff required to regularly wash hands": "Staff required to regularly wash hands",
+                "Gear and equipment sanitized between use": "Gear and equipment sanitized between use"
+            },
+            "default_value": [],
+            "return_format": "value",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0
+        },
+        {
+            "key": "field_640ee3296a72e",
+            "label": "Confirmation",
+            "name": "tdcf_confirmation",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Instant Confirmation": "Instant Confirmation",
+                "24Hr Confirmation": "24Hr Confirmation",
+                "2-3 Business Day Confirmation": "2-3 Business Day Confirmation",
+                "No confirmation necessary": "No confirmation necessary"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_6410581172b84",
+            "label": "Social Distancing",
+            "name": "tdcf_social_distancing",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Temperature checks given to staff": "Temperature checks given to staff",
+                "Masks required": "Masks required",
+                "Paid stay-at-home policy for staff with symptoms": "Paid stay-at-home policy for staff with symptoms",
+                "Individually wrapped food options available": "Individually wrapped food options available",
+                "Protective shields in place at main contact areas": "Protective shields in place at main contact areas"
+            },
+            "default_value": [],
+            "return_format": "value",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0
+        },
+        {
+            "key": "field_6410583372b85",
+            "label": "Safety Measures",
+            "name": "tdcf_safety_measures",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Masks provided": "Masks provided",
+                "Hand sanitizer provided": "Hand sanitizer provided",
+                "Masks worn by staff": "Masks worn by staff",
+                "Contactless payment for gratuities and add-ons": "Contactless payment for gratuities and add-ons",
+                "Social distancing measures in place": "Social distancing measures in place",
+                "Contactless ticket redemption": "Contactless ticket redemption"
+            },
+            "default_value": [],
+            "return_format": "value",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "tdcpt_tourism"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1683628885
+}
