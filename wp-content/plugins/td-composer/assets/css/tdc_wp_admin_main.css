@@ -461,11 +461,18 @@ textarea {
   margin-bottom: 0;
 }
 .tdc-property-colorpicker .tdc-colorpicker-wrap {
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e0e0e0;
   width: 19px;
   height: 19px;
   cursor: pointer;
   text-align: center;
+}
+.tdc-property-colorpicker .tdc-colorpicker-wrap[style]:not([style=""]) {
+  width: 21px;
+  height: 21px;
+  border-color: #dfdfdf;
+  border-width: 2px;
+  box-sizing: border-box;
 }
 .tdc-property-colorpicker .tdc-colorpicker-wrap i {
   position: relative;

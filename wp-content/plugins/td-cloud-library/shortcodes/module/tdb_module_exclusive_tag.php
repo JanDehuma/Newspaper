@@ -22,6 +22,7 @@ class tdb_module_exclusive_tag extends tdb_module_template_part {
 				margin: 0;
 			}
 			.tdb_module_exclusive_tag span {
+			    transform: translateZ(0);
 				background-color: #ff0000;
 				padding: 4px 8px 2px;
 				margin-right: 8px;
@@ -199,14 +200,13 @@ class tdb_module_exclusive_tag extends tdb_module_template_part {
 			return $buffy;
 		}
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= '<span>' . $excl_txt . '</span>';
 		$buffy .= '</div>';
 

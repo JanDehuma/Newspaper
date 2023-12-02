@@ -25,6 +25,9 @@ class tdb_module_date extends tdb_module_template_part {
 				line-height: 1.2;
 				color: #767676;
 			}
+			.tdb_module_date .td-element-style {
+			    z-index: -1;
+			}
 
 
 
@@ -163,14 +166,13 @@ class tdb_module_date extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<time class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= $display_date;
 		$buffy .= '</time>';
 

@@ -21,6 +21,9 @@ class tdb_module_author_photo extends tdb_module_template_part {
 				display: flex;
 				margin: 0;
 			}
+			.tdb_module_author_photo a {
+				transform: translateZ(0);
+            }
 			.tdb_module_author_photo img {
 				display: block;
 			}
@@ -228,14 +231,13 @@ class tdb_module_author_photo extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= '<a href="' . $author_url . '"' . $link_target . '>';
 				$buffy .= '<img src="' . $img_src_attr . '" 
 							title="' . $author_name . '"' . 

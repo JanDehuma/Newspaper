@@ -134,7 +134,7 @@ class tdb_state_loader {
 
                                     $td_cpt_tax = td_util::get_option('td_cpt_tax');
 
-                                    $default_template_id = !empty($term_obj_tax) ? $td_cpt_tax[$term_obj_tax]['tdb_category_template'] : '';
+                                    $default_template_id = ( !empty($term_obj_tax) && isset( $td_cpt_tax[$term_obj_tax]['tdb_category_template'] ) ) ? $td_cpt_tax[$term_obj_tax]['tdb_category_template'] : '';
 
                                     // if we find an individual template..
                                     if ( td_global::is_tdb_template( $default_template_id, true ) ) {

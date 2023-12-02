@@ -54,7 +54,8 @@ class vc_row extends tdc_composer_block {
 	                    margin-right: -@gap;
 	                }
 	                .$unique_block_class .tdc-row-video-background-error,
-	                .$unique_block_class .vc_column {
+	                .$unique_block_class > .vc_column,
+	                .$unique_block_class > .tdc-columns > .vc_column {
 	                    padding-left: @gap;
 	                    padding-right: @gap;
 	                }

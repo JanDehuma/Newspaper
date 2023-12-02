@@ -9,7 +9,10 @@ abstract class tdb_module {
 
     private $module_atts = array();
 
+
+    protected $review_source = 'author';
     protected $td_review;
+    protected $user_reviews_overall = 0;
     protected $is_review = false;
 
     protected $post_thumb_id = NULL;
@@ -37,20 +40,43 @@ abstract class tdb_module {
             }
         }
 
+        // set the reviews source
+        if( isset( $this->module_atts['review_source'] ) && !empty( $this->module_atts['review_source'] ) ) {
+            $this->review_source = $this->module_atts['review_source'];
+        }
+
         //get the review metadata
         //$this->td_review = get_post_meta($this->post->ID, 'td_review', true); @todo $this->td_review variable name must be replaced and the 'get_quotes_on_blocks', 'get_category' methods also
         $this->td_review = td_util::get_post_meta_array($this->post['post_id'], 'td_post_theme_settings');
 
-        //var_dump($this->post);
+        switch( $this->review_source ) {
+            case 'author':
+                if(
+                    !empty($this->td_review['has_review']) &&
+                    (
+                        !empty($this->td_review['p_review_stars']) ||
+                        !empty($this->td_review['p_review_percents']) ||
+                        !empty($this->td_review['p_review_points'])
+                    )
+                ) {
+                    $this->is_review = true;
+                }
+                break;
 
-        if (!empty($this->td_review['has_review']) and (
-                !empty($this->td_review['p_review_stars']) or
-                !empty($this->td_review['p_review_percents']) or
-                !empty($this->td_review['p_review_points'])
-            )
-        ) {
-            $this->is_review = true;
+            case 'user_reviews':
+                if( $this->post['post_type'] == 'tdc-review' ) {
+                    $review_overall_rating = td_util::get_overall_review_rating( $this->post['post_id'] );
+                } else {
+                    $review_overall_rating = td_util::get_overall_post_rating( $this->post['post_id'] );
+                }
+
+                if( $review_overall_rating ) {
+                    $this->is_review = true;
+                    $this->user_reviews_overall = $review_overall_rating;
+                }
+                break;
         }
+
     }
 
 
@@ -119,7 +145,11 @@ abstract class tdb_module {
         if (!$show_when_review and ( $this->is_review and td_util::get_option('tds_m_show_review') != 'hide' )) {
             //if review show stars
             $buffy .= '<span class="entry-review-stars">';
-            $buffy .=  td_review::render_stars($this->td_review);
+                if( $this->review_source == 'user_reviews' && !empty( $this->user_reviews_overall ) ) {
+                    $buffy .= td_review::number_to_stars( $this->user_reviews_overall );
+                } else {
+                    $buffy .=  td_review::render_stars( $this->td_review );
+                }
             $buffy .= '</span>';
 
         } else {
@@ -144,7 +174,7 @@ abstract class tdb_module {
 
                 $buffy .= '<span class="td-post-date">';
                     if ($modified_date == 'yes' || td_util::get_option('tds_m_show_modified_date') == 'yes') {
-                        $display_modified_date = $this->post['post_modified'];
+                        $display_modified_date = isset($this->post['post_modified']) ? $this->post['post_modified'] : $this->post['post_date'];
 
                         if( $time_ago != '' ) {
                             $current_time = current_time( 'timestamp' );
@@ -199,7 +229,11 @@ abstract class tdb_module {
 
         if ($this->is_review and td_util::get_option('tds_m_show_review') != 'hide' ) {
             $buffy .= '<span class="entry-review-stars">';
-                $buffy .= td_review::render_stars($this->td_review);
+                if( $this->review_source == 'user_reviews' && !empty( $this->user_reviews_overall ) ) {
+                    $buffy .= td_review::number_to_stars( $this->user_reviews_overall );
+                } else {
+                    $buffy .=  td_review::render_stars( $this->td_review );
+                }
             $buffy .= '</span>';
         }
 

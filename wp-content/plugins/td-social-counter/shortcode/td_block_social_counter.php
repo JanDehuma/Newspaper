@@ -193,6 +193,9 @@ class td_block_social_counter extends td_block {
                     .td_social_twitch .td-social-box {
                         background-color: #9147FF;
                     }
+                    .td_social_steam .td-social-box {
+                        background-color: #c7d5e0;
+                    }
                     .td-social-boxed .td_social_type {
                         text-align: center;
                         width: 33.3333%;
@@ -284,6 +287,9 @@ class td_block_social_counter extends td_block {
                     .td-social-colored .td_social_twitch .td-sp {
                         background-color: #9147FF;
                     }
+                    .td-social-colored .td_social_steam .td-sp {
+                        background-color: #c7d5e0;
+                    }
                     .td-social-font-icons .td-sp {
                         background: none;
                         font-family: 'newspaper', sans-serif;
@@ -338,6 +344,10 @@ class td_block_social_counter extends td_block {
                         content: '\\e909';
                         color: #9147FF;
                     }
+                     .td-social-font-icons .td_social_steam .td-sp:before {
+                        content: '\\e939';
+                        color: #1b2838;
+                    }
                     
                     /* @specific_style_style1 */
                     .td-social-style1 .td_social_type .td-social-box {
@@ -372,6 +382,9 @@ class td_block_social_counter extends td_block {
                     }
                     .td-social-style1 .td_social_twitch:hover .td-social-box {
                         background-color: #9147FF !important;
+                    }
+                     .td-social-style1 .td_social_steam:hover .td-social-box {
+                        background-color: #1b2838 !important;
                     }
                     
                     /* @specific_style_style2 */
@@ -477,6 +490,9 @@ class td_block_social_counter extends td_block {
                     .td_block_social_counter.td-social-style3 .td_social_twitch .td-sp {
                         background-position: -16px -777px;
                     }
+                    .td_block_social_counter.td-social-style3 .td_social_steam .td-sp {
+                        background-position: -15px -838px;
+                    }
                     
                     /* @specific_style_style4 */
                     .td_block_social_counter.td-social-style4 {
@@ -549,7 +565,9 @@ class td_block_social_counter extends td_block {
                     .td_block_social_counter.td-social-style4 .td_social_twitch .td-sp {
                         background-position: -16px -777px;
                     }
-                    
+                    .td_block_social_counter.td-social-style4 .td_social_steam .td-sp {
+                        background-position: -15px -838px;
+                    }
                     /* @specific_style_style5 */
                     .td-social-style5 .td-social-list {
                         margin-left: -8px;
@@ -632,7 +650,9 @@ class td_block_social_counter extends td_block {
                     .td-social-style7 .td_social_twitch:hover .td-social-box {
                         background-color: #9147FF !important;
                     }
-                    
+                    .td-social-style7 .td_social_steam:hover .td-social-box {
+                        background-color: #000 !important;
+                    }
                     /* @specific_style_style8 */
                     .td_block_social_counter.td-social-style8 {
                         color: #000;
@@ -858,7 +878,14 @@ class td_block_social_counter extends td_block {
                             background-position: -12px -772px;
                         }
                     }
-                    
+                    .td_block_social_counter.td-social-style9 .td_social_steam .td-sp {
+                        background-position: -4px -827px;
+                    }
+                    @media (min-width: 768px) and (max-width: 1018px) {
+                        .td_block_social_counter.td-social-style9 .td_social_steam .td-sp {
+                            background-position: -14px -834px;
+                        }
+                    }
                     /* @specific_style_style10 */
                     .td_block_social_counter.td-social-style10 {
                         color: #000;
@@ -1009,7 +1036,14 @@ class td_block_social_counter extends td_block {
                             background-position: -12px -772px;
                         }
                     }
-                    
+                    .td_block_social_counter.td-social-style10 .td_social_steam .td-sp {
+                        background-position: -5px -827px;
+                    }
+                    @media (min-width: 768px) and (max-width: 1018px) {
+                        .td_block_social_counter.td-social-style10 .td_social_steam .td-sp {
+                            background-position: -13px -834px;
+                        }
+                    }
             
                     /* @counter_color */
                     div.$unique_block_class .td_social_info_counter {
@@ -1273,6 +1307,15 @@ class td_block_social_counter extends td_block {
                     'button' => __td('Follow'),
                     'url' => "https://twitch.tv/$user_id",
                     'text' => __td('Followers'),
+                    'api' => $td_social_api->get_social_counter($service_id, $user_id, $access_token),
+                );
+                break;
+
+            case 'steam':
+                return array(
+                    'button' => __td('Follow'),
+                    'url' => "$user_id",
+                    'text' => __td('Members'),
                     'api' => $td_social_api->get_social_counter($service_id, $user_id, $access_token),
                 );
                 break;

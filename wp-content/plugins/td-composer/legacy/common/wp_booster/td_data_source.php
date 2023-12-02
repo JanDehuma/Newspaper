@@ -1410,6 +1410,21 @@ class td_data_source {
 
 		    }
 
+            // for debugging @todo remove
+            //if ( !$in_composer && in_array( $atts['block_type'], array( 'tdb_filters_loop', 'tdb_flex_loop_builder' ) ) ) {
+            //
+            //    $wp_debug_backtrace = wp_debug_backtrace_summary(null,0,false);
+            //
+            //    if ( ( $atts['block_type'] === 'tdb_filters_loop' && $wp_debug_backtrace[1] === 'td_block->render' ) || ( $atts['block_type'] === 'tdb_flex_loop_builder' ) ) {
+            //        echo '<pre class="td-container" style="white-space: pre-wrap;">' . $atts['block_type'];
+            //        print_r($args);
+            //        print_r($td_query);
+            //        echo '</pre>';
+            //    }
+            //
+            //
+            //}
+
 	    }
 
         return $td_query;

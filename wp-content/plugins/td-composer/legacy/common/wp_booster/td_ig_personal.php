@@ -46,7 +46,6 @@ class td_ig_personal {
 		}
 
 		if( is_admin() ) {
-			//add_action( 'wp_ajax_td_after_connection', array( $this, 'td_after_connection' ) );
 			add_action( 'wp_ajax_td_save_account', array( $this, 'td_save_account' ) );
 			add_action( 'wp_ajax_td_remove_account', array( $this, 'td_remove_account' ) );
 		}
@@ -66,83 +65,9 @@ class td_ig_personal {
 	}
 
 	/*
-	 * used to test an instagram account and generate a long lived access token after app authorization has been made
-	 *
-	 * @since 29.07.2020 - not used anymore ... ( the test and long-lived access token is made on https://tagdiv.com/td_instagram_api/v2/td-instagram-api-v2.php )
-	 */
-	function td_after_connection() {
-
-		$reply = array(
-			'status' => '',
-			'account_data' => array(),
-		);
-
-		if ( isset( $_POST['access_token'] ) ) {
-
-			$access_token = sanitize_text_field( $_POST['access_token'] );
-			$account_data = $this->td_account_data_for_token( $access_token );
-
-			if ( isset( $account_data['error_message'] ) ) {
-				$reply['status'] = 'error - ' . $account_data['error_message'] . ' - on verifying access token';
-				$account_data['access_token'] = $access_token;
-				td_log::log(__FILE__, __FUNCTION__, 'instagram connect account > td_account_data_for_token ERROR', $account_data );
-			} elseif ( $account_data !== false ) {
-
-				// token exchange request ( this request will exchange the short lived access token to a long lived one.. )
-				$url = 'https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=' . self::$client_secret . '&access_token=' . $access_token;
-
-				$args = array(
-					'timeout' => 60,
-					'sslverify' => false
-				);
-				$result = wp_remote_get( $url, $args );
-
-				if ( ! is_wp_error( $result ) ) {
-					$data = json_decode( $result['body'] );
-				} else {
-					$data = array();
-				}
-
-				/*
-					successful response should be like:
-
-					{
-					  "access_token": "{access-token}",
-					  "token_type": "{token-type}",
-					  "expires_in": {expires-in}
-					}
-				*/
-
-				if ( isset( $data->access_token ) ) {
-
-					$account_data['access_token'] = $data->access_token;
-					$account_data['token_type'] = $data->token_type;
-					$account_data['expires_in'] = $data->expires_in;
-
-					$reply['status'] = 'success - a long lived access token was successfully exchanged for the short lived one !';
-
-				} elseif ( isset( $data->error ) ) {
-					$reply['status'] = 'error - ' . $account_data['username'] . ' account short lived access token was successfully processed but the request for exchange it to a long lived access token has returned the following error: ' . $data->error->message;
-					td_log::log(__FILE__, __FUNCTION__, 'access_token/ig_exchange_token', $data );
-				}
-
-				td_log::log(__FILE__, __FUNCTION__, 'instagram $account_data', $account_data );
-				$reply['account_data'] = $account_data;
-
-			} else {
-				$reply['status'] = 'error - a successful connection could not be made.!';
-			}
-		}  else {
-			$reply['status'] = 'error - no access_token provided!';
-		}
-
-		die( json_encode( $reply ) );
-	}
-
-	/*
 	 * this function check's the validity of a user instagram access token
 	 * @param $access_token
-	 * @return bool|bool[] - array with the user name & id based on the access token / the instagram graph error / false if unknown data was received
+	 * @return bool|bool[] - array with the username & id based on the access token / the instagram graph error / false if unknown data was received
 	 */
 	function td_account_data_for_token( $access_token ) {
 
@@ -164,7 +89,7 @@ class td_ig_personal {
 		);
 		$result = wp_remote_get( $url, $args );
 
-		if ( ! is_wp_error( $result ) ) {
+		if ( !is_wp_error( $result ) ) {
 			$data = json_decode( $result['body'] );
 		} else {
 			$data = array();
@@ -198,30 +123,29 @@ class td_ig_personal {
 		if ( current_user_can( 'switch_themes' ) ) {
 
 			$options = td_options::get_array('td_instagram_connected_account');
-			$account_data = isset( $_POST['account_data'] ) ? $_POST['account_data'] : false;
+			$account_data = $_POST['account_data'] ?? false;
 
-			if ( $account_data !== false && is_array( $account_data ) ) {
-				$access_token = isset( $account_data['access_token'] ) ? sanitize_text_field( $account_data['access_token'] ) : '';
+			if ( $account_data !== false && is_array( $account_data) ) {
+				$access_token = isset($account_data['access_token']) ? sanitize_text_field($account_data['access_token']) : '';
 			}
 
-			$test_connection_data = $this->td_account_data_for_token( $access_token ); // verifies access token and returns account user id and username
+            // verifies access token and returns account user id and username
+			$test_connection_data = $this->td_account_data_for_token($access_token);
 
 			if ( isset( $test_connection_data['error_message'] ) ) {
 				$reply['status'] = 'error - ' . $test_connection_data['error_message'] . ' - on verifying access token';
 				td_log::log(__FILE__, __FUNCTION__, 'instagram > td_save_account $test_connection_data returned an error', $test_connection_data );
 			} elseif ( $test_connection_data !== false ) {
 				$options['connected_account'] = array(
-					'access_token' => $access_token,
+					'access_token' => td_util::php_openssl_encrypt($access_token), // php_openssl_encrypt $access_token
 					'account_type' => 'basic',
-					'user_id' => $test_connection_data['id'],
-					'username' => $test_connection_data['username'],
+					'user_id' => td_util::php_openssl_encrypt($test_connection_data['id']), // php_openssl_encrypt user id
+					'username' => $test_connection_data['username'], // the username
 					'expires_in' => isset( $account_data['expires_in'] ) ? (int) $account_data['expires_in']  : '',
 					'expires_in_ts' => isset( $account_data['expires_in'] ) ? time() + (int) $account_data['expires_in'] : '',
-					'token_type' => isset( $account_data['token_type'] ) ? $account_data['token_type'] : '',
-					'media_count' => isset( $account_data['media_count'] ) ? (int) $account_data['media_count'] : ''
 				);
 
-				td_options::update_array('td_instagram_connected_account', $options);
+				td_options::update_array('td_instagram_connected_account', $options );
 				
 				$reply['status'] = 'success - ' . $test_connection_data['username'] . ' instagram account was successfully connected!';
 
@@ -267,15 +191,16 @@ class td_ig_personal {
 		if ( isset( $_POST['account_id'] ) ) {
 
 			$options = td_options::get_array('td_instagram_connected_account');
-			if ( !empty( $options ) ) {
+			if ( !empty($options) ) {
 
-				if ( $_POST['account_id'] === $options['connected_account']['user_id'] ){
+                $user_id = td_util::php_openssl_decrypt($options['connected_account']['user_id']);
+				if ( $_POST['account_id'] === $user_id ) {
 
 					// delete connected account data
-					td_options::update_array('td_instagram_connected_account', array());
+					td_options::update_array('td_instagram_connected_account', array() );
 
 					// also delete account cached data
-					$cache_key = 'td_instragram_tk_' . strtolower( $_POST['account_username'] );
+					$cache_key = 'td_instagram_tk_' . strtolower( $_POST['account_username'] );
 					td_remote_cache::delete_item('td_instagram', $cache_key );
 
 					$reply['status'] = 'success - ' . $_POST['account_username'] . ' account and associated cached data deleted';
@@ -321,19 +246,16 @@ class td_ig_personal {
 		// it shouldn't run if we don't have an instagram account connected
 		$instagram_connected_account = self::$td_instagram_connected_account;
 
-		$access_token = $instagram_connected_account['access_token'];
+		$access_token = td_util::php_openssl_decrypt($instagram_connected_account['access_token']);
 
 		$url = 'https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&&access_token=' . $access_token;
-		$args = array(
-			'timeout' => 60,
-			'sslverify' => false
-		);
+		$args = array( 'timeout' => 60, 'sslverify' => false );
 		$response = wp_remote_get( $url, $args );
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( ! empty( $response['expires_in'] ) && ! empty( $response['access_token'] ) ) {
+		if ( !empty($response['expires_in']) && !empty($response['access_token']) ) {
 
-			$instagram_connected_account['access_token'] = $response['access_token'];
+			$instagram_connected_account['access_token'] = td_util::php_openssl_ecrypt($response['access_token']);
 			$instagram_connected_account['token_type'] = $response['token_type'];
 			$instagram_connected_account['expires_in'] = $response['expires_in'];
 			$instagram_connected_account['expires_in_ts'] = time() + (int) $response['expires_in'];
@@ -348,7 +270,7 @@ class td_ig_personal {
 
 	function td_process_feeds_images() {
 
-		td_log::log(__FILE__, __FUNCTION__, 'CRON JOB Instagram process feeds images run', array() );
+		//td_log::log(__FILE__, __FUNCTION__, 'CRON JOB Instagram process feeds images run' );
 
 		// get db saved instagram account settings
 		$instagram_access_settings = td_options::get_array( 'td_instagram_connected_account');
@@ -356,14 +278,12 @@ class td_ig_personal {
 		$instagram_connected_account = $instagram_access_settings['connected_account'] ?? array();
 
 		// return here if we don't have a connected account
-		if ( empty( $instagram_connected_account ) ) {
-			// log this try..
-			td_log::log( __FILE__, __FUNCTION__, 'no instagram account connected', '' );
+		if ( empty($instagram_connected_account) ) {
 			return;
 		}
 
 		// set the cache key
-		$cache_key = 'td_instragram_tk_' . strtolower( $instagram_connected_account['username'] );
+		$cache_key = 'td_instagram_tk_' . strtolower( $instagram_connected_account['username'] );
 
 		// get cached user instagram data
 		$instagram_data = td_remote_cache::get('td_instagram', $cache_key );
@@ -371,7 +291,7 @@ class td_ig_personal {
 		if ( $instagram_data === false ) {
 			// cache is not set
 			// add a log entry and return here..
-			td_log::log( __FILE__, __FUNCTION__, 'CRON JOB - ' . $instagram_connected_account['username'] . ' connected account cache data is not set!', '' );
+			td_log::log( __FILE__, __FUNCTION__, 'CRON JOB - ' . $instagram_connected_account['username'] . ' connected account cache data is not set!', [ '$cache_key' => $cache_key ] );
 			return;
 		}
 
@@ -391,7 +311,7 @@ class td_ig_personal {
             }
         }
 
-        // set the cache with the new feeds data ( the the attachment id foreach feed media img should be set at this point so we update the cache data )
+        // set the cache with the new feeds data ( the attachment id foreach feed media img should be set at this point, so we update the cache data )
 		$instagram_data['user']['feeds'] = $feeds;
 		td_remote_cache::set('td_instagram', $cache_key, $instagram_data, 10800 ); // update and reset the cache
 
@@ -403,15 +323,15 @@ class td_ig_personal {
 	/**
 	 * process feed image and upload it..
 	 * @param $feed
-	 * @return bool|mixed false on failure or the image attachment id if the feed img was successfully processed
+	 * @return bool|int false on failure or the image attachment id if the feed img was successfully processed
 	 */
 	function get_image($feed) {
 
 		// check item for media_url
-		$media_url = self::get_media_url( $feed );
-		$media_id = isset( $feed['id'] ) ? $feed['id'] : '';
+		$media_url = self::get_media_url($feed);
+		$media_id = $feed['id'] ?? '';
 
-		if ( !empty( $media_url ) ) {
+		if ( !empty($media_url) ) {
 
 			$new_file_name = explode( '?', $media_url );
 			if ( strlen( basename( $new_file_name[0], '.jpg' ) ) > 10 ) {
@@ -438,22 +358,33 @@ class td_ig_personal {
 			$file_array['name'] = $new_file_name . '.jpg';;
 
 			// download file to temp location
-			$file_array['tmp_name'] = download_url( $media_url );
+            $response = download_url($media_url);
 
-			// if error storing temporarily, return the error.
-			if ( is_wp_error( $file_array['tmp_name'] ) ) {
-				@unlink( $file_array['tmp_name'] );
-				td_log::log( __FILE__, __FUNCTION__,'item picture - is_wp_error $file_array - error storing temporarily', $media_url );
+			// if error storing temporarily, return..
+			if ( is_wp_error($response) ) {
+				td_log::log(
+                    __FILE__,
+                    __FUNCTION__,
+                    'item picture - storing temporarily - got wp_error, get_error_message: ' . $response->get_error_message(),
+                    [ '$media_url' => $media_url ]
+                );
 				return false;
 			}
 
-			// do the validation and storage stuff
-			$attachment_id = media_handle_sideload( $file_array ); // $id of attachment or wp_error
+            // save temp location file download response
+            $file_array['tmp_name'] = $response;
 
-			// if error storing permanently, unlink.
-			if ( is_wp_error( $attachment_id ) ) {
-				@unlink( $file_array['tmp_name'] );
-				td_log::log( __FILE__, __FUNCTION__,'item picture - is_wp_error $attachment_id:  ', $attachment_id->get_error_messages() );
+			// do the validation and storage stuff
+			$attachment_id = media_handle_sideload($file_array); // returns the $id of attachment or wp_error
+
+			// if error storing permanently, return..
+			if ( is_wp_error($attachment_id) ) {
+				td_log::log(
+                    __FILE__,
+                    __FUNCTION__,
+                    'item picture - storing permanently - got wp_error, get_error_message' . $attachment_id->get_error_message(),
+                    [ '$attachment_id' => $attachment_id ]
+                );
 				return false;
 			}
 

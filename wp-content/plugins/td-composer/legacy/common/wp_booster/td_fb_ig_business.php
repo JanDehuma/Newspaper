@@ -637,7 +637,7 @@ class td_fb_ig_business {
 	 */
 	function td_fb_ig_business_process_feeds_images() {
 
-		td_log::log(__FILE__, __FUNCTION__, 'td_fb_ig_business: CRON JOB Instagram process feeds images run', array() );
+		//td_log::log(__FILE__, __FUNCTION__, 'td_fb_ig_business: CRON JOB Instagram process feeds images run' );
 
 		// get saved ig business connected accounts
 		$td_instagram_business_accounts = td_options::get_array( 'td_instagram_business_accounts');
@@ -645,7 +645,7 @@ class td_fb_ig_business {
 		// return here if we don't have any business connected accounts
 		if ( empty( $td_instagram_business_accounts ) ) {
 			// log this try..
-			td_log::log( __FILE__, __FUNCTION__, 'no instagram business accounts connected', '' );
+			//td_log::log( __FILE__, __FUNCTION__, 'no instagram business accounts connected' );
 			return;
 		}
 
@@ -659,14 +659,12 @@ class td_fb_ig_business {
 
 			if ( $instagram_data === false ) {
 				// cache is not set, add a log entry and return here ...
-				td_log::log(
-					__FILE__,
-					__FUNCTION__,
-					'CRON JOB - ' . $account['username'] . ' connected <span style="color: orangered;">business</span> account cache data is not set !',
-					array(
-						'cache_key' => $cache_key
-					)
-				);
+                //td_log::log(__FILE__,__FUNCTION__,
+                //    'CRON JOB - ' . $account['username'] . ' connected <span style="color: orangered;">business</span> account cache data is not set !',
+                //    array(
+                //        'cache_key' => $cache_key
+                //    )
+                //);
 				continue;
 			}
 
@@ -700,9 +698,7 @@ class td_fb_ig_business {
 			td_remote_cache::update('td_instagram', $cache_key, $instagram_data );
 
 			// add a log entry
-			td_log::log(
-				__FILE__,
-				__FUNCTION__,
+			td_log::log(__FILE__,__FUNCTION__,
 				'CRON JOB success - ' . $account['username'] . ' connected <span style="color: orangered;">business</span> account cache data updated!',
 				td_remote_cache::get('td_instagram', $cache_key )
 			);
@@ -723,12 +719,12 @@ class td_fb_ig_business {
 		$media_id = $feed['id'] ?? '';
 		$instagram_id = $feed['username'] ?? '';
 
-		if ( !empty( $media_id ) ) {
+		if ( !empty($media_id) ) {
 
 			$new_file_name = $media_id . '_' . $instagram_id;
 
-			// check if the picture attachment was previously processed and return that att image id if so ...
-			$attachment = self::get_attachment( $new_file_name );
+			// check if the picture attachment was previously processed and return that attachment image id if so ...
+			$attachment = self::get_attachment($new_file_name);
 
 			// if we find the image attachment return its id
 			if ( $attachment !== false ) {
@@ -745,24 +741,35 @@ class td_fb_ig_business {
 			$file_array['name'] = $new_file_name . '.jpg';
 
 			// download file to temp location
-			$file_array['tmp_name'] = download_url( $media_url );
+            $response = download_url($media_url);
 
-			// if error storing temporarily, return false and log the error
-			if ( is_wp_error( $file_array['tmp_name'] ) ) {
-				@unlink( $file_array['tmp_name'] );
-				td_log::log( __FILE__, __FUNCTION__,'item picture - is_wp_error $file_array - error storing temporarily', $media_url );
-				return false;
-			}
+            // if error storing temporarily, return..
+            if ( is_wp_error($response) ) {
+                td_log::log(
+                    __FILE__,
+                    __FUNCTION__,
+                    'item picture - storing temporarily - got wp_error, get_error_message: ' . $response->get_error_message(),
+                    [ '$media_url' => $media_url, '$instagram_id' => $instagram_id ]
+                );
+                return false;
+            }
+
+            // if no error save temp location file download response
+            $file_array['tmp_name'] = $response;
 
 			// do the validation and storage stuff
-			$attachment_id = media_handle_sideload( $file_array ); // $id of attachment or wp_error
+			$attachment_id = media_handle_sideload($file_array); // returns the $id of attachment or wp_error
 
-			// if error storing permanently, unlink.
-			if ( is_wp_error( $attachment_id ) ) {
-				@unlink( $file_array['tmp_name'] );
-				td_log::log( __FILE__, __FUNCTION__,'item picture - is_wp_error $attachment_id:  ', $attachment_id->get_error_messages() );
-				return false;
-			}
+            // if error storing permanently, return.
+            if ( is_wp_error($attachment_id) ) {
+                td_log::log(
+                    __FILE__,
+                    __FUNCTION__,
+                    'item picture - storing permanently - got wp_error, get_error_message' . $attachment_id->get_error_message(),
+                    [ '$attachment_id' => $attachment_id, '$instagram_id' => $instagram_id ]
+                );
+                return false;
+            }
 
 			// add the ig user id cache key as meta for this new attachment
 			update_post_meta( $attachment_id, 'td_ig_business_account_attachment', 'td_instagram_tk_' . strtolower($instagram_id) );

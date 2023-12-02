@@ -238,13 +238,15 @@ class td_block_authors extends td_block {
         }
 
 
-        if (empty($sort)) {
-            $get_users_array['orderby'] = 'display_name';
-            //$td_authors = get_users(array('orderby' => 'display_name'));
-        } else {
-            $get_users_array['orderby'] = 'post_count';
-            $get_users_array['order'] = 'DESC';
-            //$td_authors = get_users(array('orderby' => 'post_count', 'order' => 'DESC'));
+        switch( $sort ) {
+            case 'post_count':
+                $get_users_array['orderby'] = 'post_count';
+                $get_users_array['order'] = 'DESC';
+                break;
+
+            default:
+                $get_users_array['orderby'] = 'display_name';
+                break;
         }
 
         if (!empty($roles)) {
@@ -285,6 +287,10 @@ class td_block_authors extends td_block {
 
 
         if (!empty($td_authors)) {
+            if( $sort == 'random' ) {
+                shuffle( $td_authors );
+            }
+
             foreach ($td_authors as $td_author) {
                 //echo td_global::$current_author_obj->ID;
                 //echo $td_author->ID;

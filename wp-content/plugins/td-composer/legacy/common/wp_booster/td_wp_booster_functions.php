@@ -800,7 +800,7 @@ function td_load_css_fonts() {
             }
         }
 
-        if ( ! empty( $final_fonts_names )) {
+        if ( !empty($final_fonts_names) ) {
             // used to pull fonts from google
             $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . $final_fonts_names . '&display=swap';
         }
@@ -856,11 +856,46 @@ function td_load_css_fonts() {
             }
         }
 
+        // 'td_filter_google_fonts_settings' - add google fonts from extra source
+        $td_filter_google_fonts = [];
+        $td_filter_google_fonts_settings = apply_filters( 'td_filter_google_fonts_settings', [] );
+        if ( !empty($td_filter_google_fonts_settings) && is_array($td_filter_google_fonts_settings) ) {
+            foreach ( $td_filter_google_fonts_settings as $google_fonts_id => $font_weights ) {
+                if ( array_key_exists( $google_fonts_id, $td_filter_google_fonts ) && is_array( $font_weights ) ) {
+                    $td_filter_google_fonts[$google_fonts_id] = array_unique( array_merge( $font_weights, $td_filter_google_fonts[$google_fonts_id] ) );
+                } else {
+                    $td_filter_google_fonts[$google_fonts_id] = $font_weights;
+                }
+            }
+        }
+
         // remove duplicated font ids
         $unique_google_fonts_ids = array_unique( array_merge( $unique_google_fonts_ids, $extra_google_fonts_ids ) );
 
-        //used to pull fonts from google
-        $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . td_fonts::get_google_fonts_names($unique_google_fonts_ids) . '&display=swap';
+        $final_fonts_names = '';
+        if ( !empty($unique_google_fonts_ids) ) {
+            $final_fonts_names = td_fonts::get_google_fonts_names($unique_google_fonts_ids);
+        }
+
+        if ( !empty($td_filter_google_fonts) ) {
+
+            // get td_filter_google_fonts_settings names
+            $td_filter_google_fonts_settings_names = td_fonts::get_google_fonts_for_url($td_filter_google_fonts);
+
+            if ( empty($final_fonts_names) ) {
+                $final_fonts_names = $td_filter_google_fonts_settings_names;
+            } else {
+                $final_fonts_names .= '|' . $td_filter_google_fonts_settings_names;
+            }
+
+        }
+
+        if ( !empty($final_fonts_names) ) {
+
+            // used to pull fonts from google
+            $td_fonts_css_files = '://fonts.googleapis.com/css?family=' . $final_fonts_names . '&display=swap';
+
+        }
 
     }
 
@@ -3499,8 +3534,8 @@ if ( $tds_search_taxonomies_terms === 'yes' ) {
 
             // post type
             $post_type = $wp_query->get('post_type');
-            $post_type_condition = '';
 
+            $post_type_condition = '';
             if ( !empty($post_type) && $post_type !== 'any' ) {
                 $post_type = is_array($post_type) ? $post_type : array($post_type);
                 $placeholders = array_fill(0, count($post_type), '%s');
@@ -3517,7 +3552,8 @@ if ( $tds_search_taxonomies_terms === 'yes' ) {
                                 INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id
                                 WHERE tr.object_id = {$wpdb->posts}.ID
                                 AND tt.taxonomy = %s
-                                AND (t.name LIKE %s OR tt.description LIKE %s)
+                                AND ( t.name LIKE %s OR tt.description LIKE %s )
+                                AND {$wpdb->posts}.post_status = 'publish'
                                 $post_type_condition
                             )",
                     $taxonomy,
@@ -3530,7 +3566,9 @@ if ( $tds_search_taxonomies_terms === 'yes' ) {
             }
 
 		}
+
 		return $where;
+
 	}
 	add_filter( 'posts_where', 'td_tax_search_where', 10, 2 );
 

@@ -4,12 +4,12 @@
 	Plugin URI: https://tagdiv.com
 	Description: Displays your activity on social networks with style. Use it as a cool widget or shortcode.
 	Author: tagDiv
-	Version: 5.4 | built on 06.10.2023 12:11
+	Version: 5.5 | built on 09.11.2023 13:19
 	Author URI: https://tagdiv.com
 */
 
 //hash
-define('TD_SOCIAL_COUNTER', '8f5cef9ccd4c0c0934629df538096bbf');
+define('TD_SOCIAL_COUNTER', '2ed7fe863d425d73a6ed286703ee234b');
 
 
 //version check
@@ -77,6 +77,7 @@ class td_social_counter_plugin {
                 'soundcloud',
                 'rss',
                 'rss_url',
+                'steam',
                 'el_class'
             ),
             "params" => array_merge(
@@ -302,6 +303,24 @@ class td_social_counter_plugin {
                         "value" => '',
                         "heading" => __("Twitch fixed count", TD_THEME_NAME),
                         "description" => "Add a fixed followers count for Twitch.",
+                        "holder" => "div",
+                        "class" => "tdc-textfield-big"
+                    ),
+                    array(
+                        "param_name" => "steam",
+                        "type" => "textfield",
+                        "value" => "",
+                        "heading" => __("Steam link", TD_THEME_NAME)/* . '&nbsp<a href="http://forum.tagdiv.com/tagdiv-social-counter-tutorial/" target="_blank">How to get the App Id and the Security Key</a>'*/,
+                        "description" => "",
+                        "holder" => "div",
+                        "class" => "tdc-textfield-big"
+                    ),
+                    array(
+                        "param_name" => "manual_count_steam",
+                        "type" => "textfield",
+                        "value" => '',
+                        "heading" => __("Steam fixed count", TD_THEME_NAME),
+                        "description" => "Add a fixed count for Steam.",
                         "holder" => "div",
                         "class" => "tdc-textfield-big"
                     ),

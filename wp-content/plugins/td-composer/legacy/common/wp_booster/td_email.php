@@ -112,13 +112,21 @@ class td_email {
     /* ---------
     ---- Function used to send an email
     --------- */
-    static function send_mail( $to, $subject, $message ) {
+    static function send_mail( $to, $subject, $message, $from_email='', $from_name='' ) {
+
+        if ( $from_email === '' ) {
+            $from_email = self::get_email_from_email();
+        }
+
+        if ( $from_name === '' ) {
+            $from_name = self::get_email_from_name();
+        }
 
         return wp_mail(
             $to,
             $subject,
             $message,
-            array('Content-Type: text/html; charset=UTF-8', 'From: ' . self::get_email_from_name(). ' <' . self::get_email_from_email() . '>')
+            array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_name . ' <' . $from_email . '>')
         );
 
     }

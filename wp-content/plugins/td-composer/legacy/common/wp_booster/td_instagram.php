@@ -614,7 +614,7 @@ class td_instagram {
 
 
 	/**
-	 * @param $connected_account - the Instagram account connected from theme's panel > social nteworks
+	 * @param $connected_account - the Instagram account connected from theme's panel > social networks
 	 * @param $instagram_data
 	 *
 	 * @return string - the data retrieval status
@@ -636,13 +636,13 @@ class td_instagram {
         ) {
 
 		    // account type
-			$account_type = isset( $connected_account['account_type'] ) ? $connected_account['account_type'] : 'basic';
+			$account_type = $connected_account['account_type'] ?? 'basic';
 
 			// api access token
-			$access_token = $account_type === 'business' ? $connected_account['page_access_token'] : $connected_account['access_token'];
+            $access_token = $account_type === 'business' ? $connected_account['page_access_token'] : td_util::php_openssl_decrypt($connected_account['access_token']);
 
 			// api account id
-			$account_id = $account_type === 'business' ? $connected_account['id'] : $connected_account['user_id'];
+            $account_id = $account_type === 'business' ? $connected_account['id'] : td_util::php_openssl_decrypt($connected_account['user_id']);
 
 		    // api base url
             if ( $account_type === 'business' ) {
@@ -716,13 +716,9 @@ class td_instagram {
 
             $instagram_data['user'] = array();
             $instagram_data['user']['with_access_token'] = true;
-
-			// business account data
-            //if ( $account_type === 'business' ) {} else {}
-
-            $instagram_data['user']['profile_pic_url'] = isset( $connected_account['profile_picture'] ) ? $connected_account['profile_picture'] : '';
+            $instagram_data['user']['profile_pic_url'] = $connected_account['profile_picture'] ?? '';
             $instagram_data['user']['instagram_id'] = $connected_account['username'];
-            $instagram_data['user']['edge_followed_by']['count'] = isset( $connected_account['followers'] ) ? $connected_account['followers'] : '';
+            $instagram_data['user']['edge_followed_by']['count'] = $connected_account['followers'] ?? '';
 			$instagram_data['user']['feeds'] = $instagram_media_json['data'];
 			$instagram_data['user']['api_media_request_limit'] = self::$instagram_media_data_limit;
 

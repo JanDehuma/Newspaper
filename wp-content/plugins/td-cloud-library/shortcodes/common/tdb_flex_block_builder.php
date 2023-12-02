@@ -557,17 +557,17 @@ class tdb_flex_block_builder extends td_block {
 			}
 
 
-//            // return a warning if the module template is not valid
-//            if( !tdb_util::is_tdb_module( 'tdb_module_' . $tdb_module_template_id, true ) ) {
-//					$buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner tdb-block-inner td-fix-index">';
-//                        $buffy .= td_util::get_block_error(
-//							'Flex Block Builder',
-//							'The Cloud Library Module Template set for this block is not valid or it no longer exists. Please select another Module Template.');
-//                    $buffy .= '</div>';
-//				$buffy .= '</div>';
-//
-//				return $buffy;
-//            }
+            // return a warning if the module template is not valid
+            if( !tdb_util::is_tdb_module( 'tdb_module_' . $tdb_module_template_id, true ) ) {
+					$buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner tdb-block-inner td-fix-index">';
+                        $buffy .= td_util::get_block_error(
+							'Flex Block Builder',
+							'The Cloud Library Module Template set for this block is not valid or it no longer exists. Please select another Module Template.');
+                    $buffy .= '</div>';
+				$buffy .= '</div>';
+
+				return $buffy;
+            }
 
             // return No bookmarked posts msg
             if ( isset($atts['favourite_only']) && $atts['favourite_only'] !== '' && empty(td_util::get_favourite_articles()) ) {
@@ -586,6 +586,15 @@ class tdb_flex_block_builder extends td_block {
 				$buffy .= $this->get_block_title(); //get the block title
 				$buffy .= $this->get_pull_down_filter(); //get the sub category filter for this block
 			$buffy .= '</div>';
+
+            // in composer flag .. for debugging @todo remove
+            $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+            //if ( !$in_composer ) {
+                //echo '<pre>' . print_r( $atts, true ) . '</pre>';
+                //echo '<pre>' . print_r( $this->td_query, true ) . '</pre>';
+                //echo '<pre>' . print_r( count( $this->td_query->posts ), true ) . '</pre>';
+                //echo '<pre>' . print_r( $this->td_query->posts, true ) . '</pre>';
+            //}
 
 
 			// render the inner part of the block

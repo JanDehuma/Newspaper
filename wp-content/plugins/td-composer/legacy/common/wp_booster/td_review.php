@@ -34,7 +34,7 @@ class td_review {
     }
 
     //converts 0 - 5 to stars
-    private static function number_to_stars($total_stars) {
+    static function number_to_stars($total_stars) {
 
         $star_integer = intval($total_stars);
 

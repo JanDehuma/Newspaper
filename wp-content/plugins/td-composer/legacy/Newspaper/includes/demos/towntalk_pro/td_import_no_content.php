@@ -2,16 +2,20 @@
 
 
 
+$menu_td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu', '');
+$menu_td_demo_top_menu_id = td_demo_menus::create_menu('td-demo-top-menu', '');
+$menu_td_demo_custom_menu_id = td_demo_menus::create_menu('td-demo-custom-menu', '');
+
+
+
 /*  ----------------------------------------------------------------------------
-	MENUS
+	EXTERNAL PLUGINS DATA IMPORT
 */
 
-$menu_td_demo_footer_menu_extra_id = td_demo_menus::create_menu('td-demo-footer-menu-extra', '');
+
 $menu_td_demo_header_menu_id = td_demo_menus::create_menu('td-demo-header-menu', '');
+$menu_td_demo_top_menu_id = td_demo_menus::create_menu('td-demo-top-menu', '');
 $menu_td_demo_custom_menu_id = td_demo_menus::create_menu('td-demo-custom-menu', '');
-$menu_td_demo_footer_menu_id = td_demo_menus::create_menu('td-demo-footer-menu', '');
-
-
 
 /*  ----------------------------------------------------------------------------
 	SUBSCRIPTION - start phase 1
@@ -60,36 +64,48 @@ if ( empty($disable_wizard) ) {
 
 $plan_monthly_plan_id = td_demo_subscription::add_plan( array(
         'name' => 'Monthly Plan',
-        'price' => '15',
-        'months_in_cycle' => '1',
+        'price' => '4.99',
+        'interval' => 'month',
+        'interval_count' => 1,
         'trial_days' => '0',
         'is_free' => '0',
-        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"6764fae1a31e0e1";}',
+        'is_unlimited' => '0',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"876548ebf9c344a";}',
+        'publishing_limits' => 'a:0:{}',
+        'automatic_delistings' => 'a:0:{}',
     )
 );
 
 $plan_yearly_plan_id = td_demo_subscription::add_plan( array(
         'name' => 'Yearly Plan',
-        'price' => '150',
-        'months_in_cycle' => '12',
+        'price' => '49.99',
+        'interval' => 'year',
+        'interval_count' => 1,
         'trial_days' => '0',
         'is_free' => '0',
-        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"9964fae1a31e186";}',
+        'is_unlimited' => '0',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"946548ebf9c3525";}',
+        'publishing_limits' => 'a:0:{}',
+        'automatic_delistings' => 'a:0:{}',
     )
 );
 
 $plan_free_plan_id = td_demo_subscription::add_plan( array(
         'name' => 'Free Plan',
         'price' => '',
-        'months_in_cycle' => '',
+        'interval' => 'month',
+        'interval_count' => 1,
         'trial_days' => '0',
         'is_free' => '1',
-        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:14:"464fae1a31e221";}',
+        'is_unlimited' => '0',
+        'options' => 'a:2:{s:15:"td_demo_content";i:1;s:9:"unique_id";s:15:"256548ebf9c35b2";}',
+        'publishing_limits' => 'a:0:{}',
+        'automatic_delistings' => 'a:0:{}',
     )
 );
 
 $page_payment_page_id_id = td_demo_content::add_page( array(
-    'title' => 'Checkout - towntalk_pro',
+    'title' => 'Checkout - urban_observer',
     'file' => 'tds_checkout.txt',
 ));
 
@@ -100,7 +116,7 @@ td_demo_subscription::add_option( array(
 );
 
 $page_my_account_page_id_id = td_demo_content::add_page( array(
-    'title' => 'My Account - towntalk_pro',
+    'title' => 'My Account - urban_observer',
     'file' => 'tds_my_account.txt',
 ));
 
@@ -111,7 +127,7 @@ td_demo_subscription::add_option( array(
 );
 
 $page_create_account_page_id_id = td_demo_content::add_page( array(
-    'title' => 'Login/Register - towntalk_pro',
+    'title' => 'Login/Register - urban_observer',
     'file' => 'tds_login_register.txt',
 ));
 
@@ -166,50 +182,35 @@ td_demo_subscription::add_option( array(
 /*  ----------------------------------------------------------------------------
 	PAGES
 */
-$page_megamenu_modal_id = td_demo_content::add_page( array(
-    'title' => 'Megamenu Modal',
-    'file' => 'megamenu_modal.txt',
-    'demo_unique_id' => '2864fae1a34d657',
-));
-
-$page_newsletter_id = td_demo_content::add_page( array(
-    'title' => 'Newsletter',
-    'file' => 'newsletter.txt',
-    'demo_unique_id' => '2064fae1a34deda',
-));
-
-$page_bookmark_page_id = td_demo_content::add_page( array(
-    'title' => 'Bookmark page',
-    'file' => 'bookmark_page.txt',
-    'demo_unique_id' => '9064fae1a34e726',
-));
-
 $page_tds_switching_plans_wizard_id = td_demo_content::add_page( array(
     'title' => 'Switching plans wizard',
     'file' => 'tds_switching_plans_wizard.txt',
-    'demo_unique_id' => '2664fae1a34f163',
+    'demo_unique_id' => '686548ebfa41409',
 ));
 
-$page_tabbed_content_recommended_id = td_demo_content::add_page( array(
-    'title' => 'Tabbed content - Recommended',
-    'file' => 'tabbed_content_recommended.txt',
-    'template' => 'default',
-    'demo_unique_id' => '1164fae1a350318',
+$page_modal_mobile_menu_id = td_demo_content::add_page( array(
+    'title' => 'Modal Mobile Menu',
+    'file' => 'modal_mobile_menu.txt',
+    'demo_unique_id' => '06548ebfa41cad',
 ));
 
-$page_tabbed_content_latest_id = td_demo_content::add_page( array(
-    'title' => 'Tabbed content - Latest',
-    'file' => 'tabbed_content_latest.txt',
-    'template' => 'default',
-    'demo_unique_id' => '7464fae1a350b4a',
+$page_modal_newsletter_id = td_demo_content::add_page( array(
+    'title' => 'Modal Newsletter',
+    'file' => 'modal_newsletter.txt',
+    'demo_unique_id' => '106548ebfa424a4',
 ));
 
-$page_homepage_id = td_demo_content::add_page( array(
-    'title' => 'Homepage',
-    'file' => 'homepage.txt',
-    'template' => 'default',
+$page_modal_desktop_id = td_demo_content::add_page( array(
+    'title' => 'Modal Desktop',
+    'file' => 'modal_desktop.txt',
+    'demo_unique_id' => '386548ebfa42fa3',
+));
+
+$page_homepage_publication_pro_id = td_demo_content::add_page( array(
+    'title' => 'Home',
+    'file' => 'homepage_publication_pro.txt',
     'homepage' => true,
-    'demo_unique_id' => '6564fae1a351835',
+    'demo_unique_id' => '226548ebfa43f59',
 ));
 
 
@@ -227,43 +228,16 @@ $post_tds_default_wizard_locker_id = td_demo_content::add_post( array(
         'file' => '',
         'categories_id_array' => [],
         'tds_locker_settings' => array(
-            'tds_title' => ' Access to this content is exclusively reserved for subscribers.',
-            'tds_message' => 'To access this content, please subscribe.',
+            'tds_title' => 'This Content Is Only For Subscribers',
+            'tds_message' => 'Please subscribe to unlock this content.',
+            'tds_input_placeholder' => '',
             'tds_submit_btn_text' => 'Subscribe to unlock',
+            'tds_after_btn_text' => '',
             'tds_pp_msg' => 'I consent to processing of my data according to <a href=\"#\">Terms of Use</a> & <a href=\"#\">Privacy Policy</a>',
-            'tds_locker_cf_1_name' => 'Custom field 1',
-            'tds_locker_cf_2_name' => 'Custom field 2',
-            'tds_locker_cf_3_name' => 'Custom field 3',
         ),
         'tds_payable' => 'paid_subscription',
+        'tds_paid_subs_plan_ids' => [$plan_free_plan_id,$plan_monthly_plan_id,$plan_yearly_plan_id],
         'tds_paid_subs_page_id' => $page_tds_switching_plans_wizard_id,
-        'tds_paid_subs_plan_ids' => [$plan_monthly_plan_id,$plan_yearly_plan_id,$plan_free_plan_id],
-        'tds_locker_styles' => array(
-            'tds_bg_color' => '#1b1b1b',
-            'all_tds_shadow' => '20',
-            'all_tds_shadow_color' => '#2fa6df',
-            'tds_title_color' => '#ffffff',
-            'tds_message_color' => '#ffffff',
-            'tds_submit_btn_text_color' => '#ffffff',
-            'tds_submit_btn_text_color_h' => '#1b1b1b',
-            'tds_submit_btn_bg_color' => '#2fa6df',
-            'tds_submit_btn_bg_color_h' => '#f6f6f6',
-            'tds_pp_checked_color' => '#2fa6df',
-            'tds_pp_check_bg' => '#ffffff',
-            'tds_pp_msg_color' => '#ffffff',
-            'tds_pp_msg_links_color' => '#2fa6df',
-            'tds_pp_msg_links_color_h' => '#f6f6f6',
-            'tds_general_font_family' => 'tt-primary-font_global',
-            'tds_title_font_size' => '30',
-            'tds_title_font_line_height' => '1.1',
-            'tds_title_font_weight' => '900',
-            'tds_message_font_size' => '14',
-            'tds_submit_btn_text_font_family' => 'tt-extra_global',
-            'tds_submit_btn_text_font_size' => '20',
-            'tds_submit_btn_text_font_line_height' => '1.6',
-            'tds_submit_btn_text_font_weight' => '900',
-            'tds_pp_msg_font_size' => '12',
-        ),
     )
 );
 
@@ -283,12 +257,13 @@ td_demo_content::add_locker_meta( array(
     )
 );
 
-td_util::update_option('tds_demo_options', 'a:1:{s:5:"plans";a:3:{i:0;a:2:{s:9:"unique_id";s:15:"6764fae1a31e0e1";s:4:"name";s:12:"Monthly Plan";}i:1;a:2:{s:9:"unique_id";s:15:"9964fae1a31e186";s:4:"name";s:11:"Yearly Plan";}i:2;a:2:{s:9:"unique_id";s:14:"464fae1a31e221";s:4:"name";s:9:"Free Plan";}}}');
+td_util::update_option('tds_demo_options', 'a:1:{s:5:"plans";a:3:{i:0;a:2:{s:9:"unique_id";s:15:"876548ebf9c344a";s:4:"name";s:12:"Monthly Plan";}i:1;a:2:{s:9:"unique_id";s:15:"946548ebf9c3525";s:4:"name";s:11:"Yearly Plan";}i:2;a:2:{s:9:"unique_id";s:15:"256548ebf9c35b2";s:4:"name";s:9:"Free Plan";}}}');
 
 
 /*  ----------------------------------------------------------------------------
 	SUBSCRIPTION - end phase 2
 */
+
 
 
 /*  ----------------------------------------------------------------------------
@@ -380,46 +355,86 @@ update_post_meta( $template_header_template_towntalk_id, 'header_mobile_menu_id'
 
 
 /*  ----------------------------------------------------------------------------
-	GENERAL SETTINGS
+	CLOUD TEMPLATES
 */
-td_demo_misc::update_background('', false);
+$template_tag_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Tag Template - Urban Observer',
+    'file' => 'tag_cloud_template.txt',
+    'template_type' => 'tag',
+));
 
-td_demo_misc::update_background_mobile('');
+td_demo_misc::update_global_tag_template( 'tdb_template_' . $template_tag_template_urban_observer_id );
 
-td_demo_misc::update_background_login('');
 
-td_demo_misc::update_background_header('');
+$template_search_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Search Template - Urban Observer',
+    'file' => 'search_cloud_template.txt',
+    'template_type' => 'search',
+));
 
-td_demo_misc::update_background_footer('');
+td_demo_misc::update_global_search_template( 'tdb_template_' . $template_search_template_urban_observer_id );
 
-td_demo_misc::update_footer_text('');
 
-td_demo_misc::update_logo(array('normal' => '','retina' => '','mobile' => '',));
+$template_date_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Date Template - Urban Observer',
+    'file' => 'date_cloud_template.txt',
+    'template_type' => 'date',
+));
 
-td_demo_misc::update_footer_logo(array('normal' => '','retina' => '',));
+td_demo_misc::update_global_date_template( 'tdb_template_' . $template_date_template_urban_observer_id );
 
-td_demo_misc::add_social_buttons(array());
 
-$generated_css = td_css_generator();
-if ( function_exists('tdsp_css_generator') ) {
-    $generated_css .= tdsp_css_generator();
-}
-td_util::update_option( 'tds_user_compile_css', $generated_css );
+$template_author_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Author Template - Urban Observer',
+    'file' => 'author_cloud_template.txt',
+    'template_type' => 'author',
+));
 
-// cloud templates metas
-td_demo_content::update_meta( $template_footer_template_towntalk_id, 'tdc_footer_template_id', $template_footer_template_towntalk_id );
+td_demo_misc::update_global_author_template( 'tdb_template_' . $template_author_template_urban_observer_id );
 
-td_demo_content::update_meta( $template_header_template_towntalk_id, 'tdc_header_template_id', $template_header_template_towntalk_id );
 
-// pages metas
-td_demo_content::update_meta( $page_newsletter_id, 'tdc_footer_template_id', 'no_footer' );
+$template_category_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Category Template - Urban Observer',
+    'file' => 'cat_cloud_template.txt',
+    'template_type' => 'category',
+));
 
-td_demo_content::update_meta( $page_tabbed_content_recommended_id, 'tdc_header_template_id', 'no_header' );
+td_demo_misc::update_global_category_template( 'tdb_template_' . $template_category_template_urban_observer_id );
 
-td_demo_content::update_meta( $page_tabbed_content_recommended_id, 'tdc_footer_template_id', 'no_footer' );
 
-td_demo_content::update_meta( $page_tabbed_content_latest_id, 'tdc_header_template_id', 'no_header' );
+$template_single_post_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Single Post Template - Urban Observer',
+    'file' => 'post_cloud_template.txt',
+    'template_type' => 'single',
+));
 
-td_demo_content::update_meta( $page_tabbed_content_latest_id, 'tdc_footer_template_id', 'no_footer' );
+td_util::update_option( 'td_default_site_post_template', 'tdb_template_' . $template_single_post_template_urban_observer_id );
 
-td_demo_content::update_meta( $page_homepage_id, 'tdc_header_template_id', $template_header_template_towntalk_id );
+
+$template_404_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => '404 Template - Urban Observer',
+    'file' => '404_cloud_template.txt',
+    'template_type' => '404',
+));
+
+td_demo_misc::update_global_404_template( 'tdb_template_' . $template_404_template_urban_observer_id );
+
+
+$template_footer_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Footer - Urban Observer',
+    'file' => 'footer_urban_observer_cloud_template.txt',
+    'template_type' => 'footer',
+));
+
+td_demo_misc::update_global_footer_template( 'tdb_template_' . $template_footer_urban_observer_id );
+
+
+$template_header_template_urban_observer_id = td_demo_content::add_cloud_template( array(
+    'title' => 'Header Template - Urban Observer',
+    'file' => 'header_template_urban_observer_cloud_template.txt',
+    'template_type' => 'header',
+));
+
+td_demo_misc::update_global_header_template( 'tdb_template_' . $template_header_template_urban_observer_id );
+
+

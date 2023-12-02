@@ -22,6 +22,9 @@ class tdb_module_taxonomies extends tdb_module_template_part {
 				position: relative;
 				margin: 0;
 			}
+			.tdb_module_taxonomies .td-element-style {
+			    z-index: -1;
+			}
 			.tdb_module_taxonomies .tdb-module-term {
 				padding: 3px 6px 4px;
 				background-color: #222222;
@@ -325,6 +328,13 @@ class tdb_module_taxonomies extends tdb_module_template_part {
                     'object_ids' => $post_obj->ID,
                 ));
 
+                if( $taxonomy == 'category' ) {
+                    $featured_cat_name = TD_FEATURED_CAT;
+                    $taxonomy_terms = array_filter( $taxonomy_terms, function( $term ) use ( $featured_cat_name ) {
+                        return $term->name != $featured_cat_name;
+                    } );
+                }
+
                 $i = 0;
                 foreach( $taxonomy_terms as $term ) {
                     if( $limit > 0 && ( $i + 1 ) > $limit ) {
@@ -396,14 +406,12 @@ class tdb_module_taxonomies extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
 
 			// If the selected taxonomy doesn't exist, then display a warning;
 			// otherwise proceed with trying to display the post terms

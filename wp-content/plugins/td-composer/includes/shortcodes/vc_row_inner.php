@@ -25,7 +25,8 @@ class vc_row_inner extends tdc_composer_block {
 	                    margin-left: -@gap;
 	                    margin-right: -@gap;
 	                }
-	                .$unique_block_class .vc_column_inner {
+	                .$unique_block_class > .vc_column_inner,
+	                .$unique_block_class > .tdc-inner-columns > .vc_column_inner {
 	                    padding-left: @gap;
 	                    padding-right: @gap;
 	                }

@@ -390,6 +390,7 @@ class tdb_state_attachment extends tdb_state_base {
             // Shortcode options
             $source = isset( $atts['source'] ) && $atts['source'] != '' ? $atts['source'] : '';
             $images_size = isset( $atts['images_size'] ) && $atts['images_size'] != '' ? $atts['images_size'] : 'td_1068x0';
+            $modal_images_size = isset( $atts['modal_imgs_size'] ) && $atts['modal_imgs_size'] != '' ? $atts['modal_imgs_size'] : 'td_1920x0';
 
 
             // Create an array with dummy images
@@ -399,36 +400,48 @@ class tdb_state_attachment extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 1',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 2,
                     'alt' => '',
                     'title' => 'Sample gallery image 2',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 3,
                     'alt' => '',
                     'title' => 'Sample gallery image 3',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 4,
                     'alt' => '',
                     'title' => 'Sample gallery image 4',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 5,
                     'alt' => '',
                     'title' => 'Sample gallery image 5',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 6,
                     'alt' => '',
                     'title' => 'Sample gallery image 6',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 )
             );
 
@@ -505,6 +518,22 @@ class tdb_state_attachment extends tdb_state_base {
                             $image_info = td_util::attachment_get_full_info( $gallery_image_id, $images_size );
 
                             $gallery_image['url'] = $image_info['src'];
+                        }
+
+                        // Get the modal image URL
+                        if( td_util::get_option('tds_thumb_' . $modal_images_size ) != 'yes' ) {
+                            // The thumb size is disabled, so show a placeholder thumb
+                            $thumb_disabled_path = td_global::$get_template_directory_uri;
+                            if ( strpos( $images_size, 'td_' ) === 0 ) {
+                                $thumb_disabled_path = td_api_thumb::get_key( $images_size, 'no_image_path' );
+                            }
+
+                            $gallery_image['url_modal'] = $thumb_disabled_path . '/images/thumb-disabled/' . $modal_images_size . '.png';
+                        } else {
+                            // The thumbnail size is enabled in the panel, try to get the image
+                            $image_info = td_util::attachment_get_full_info( $gallery_image_id, $modal_images_size );
+
+                            $gallery_image['url_modal'] = $image_info['src'];
                         }
 
                         $gallery_images[] = $gallery_image;

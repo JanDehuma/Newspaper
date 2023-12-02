@@ -1266,7 +1266,7 @@ class tdb_header_menu extends td_block {
 
 
 
-        global $tdb_state_single, $tdb_state_category, $tdb_state_single_page, $td_woo_state_archive_product_page, $td_woo_state_single_product_page;
+        global $tdb_state_single, $tdb_state_tag, $tdb_state_category, $tdb_state_single_page, $td_woo_state_archive_product_page, $td_woo_state_single_product_page, $td_woo_state_shop_base_page;
 
         switch( tdb_state_template::get_template_type() ) {
             case 'cpt':
@@ -1279,10 +1279,19 @@ class tdb_header_menu extends td_block {
                 break;
 
             case 'category':
+            case 'cpt_tax':
 
                 // The flag that inform composer do not parse the menu content, is set
                 td_global::set_in_element( true );
                 $state_menu = $tdb_state_category->menu->__invoke( $this->get_all_atts() );
+                td_global::set_in_element( false );
+                break;
+
+            case 'tag':
+
+                // The flag that inform composer do not parse the menu content, is set
+                td_global::set_in_element( true );
+                $state_menu = $tdb_state_tag->menu->__invoke( $this->get_all_atts() );
                 td_global::set_in_element( false );
                 break;
 
@@ -1309,22 +1318,31 @@ class tdb_header_menu extends td_block {
                 $state_menu = $td_woo_state_single_product_page->menu->__invoke( $this->get_all_atts() );
                 td_global::set_in_element( false );
                 break;
+
+            case 'woo_shop_base':
+
+                // The flag that inform composer do not parse the menu content, is set
+                td_global::set_in_element(true);
+                $state_menu = $td_woo_state_shop_base_page->menu->__invoke($this->get_all_atts());
+                td_global::set_in_element(false);
+                break;
+
         }
 
-        // id we're on td composer
-        if ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ){
-            //echo '<pre>';
-            //print_r();
-            //echo '</pre>';
-        }
-
-        // if we're on the front end
-        if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
-            //echo PHP_EOL .'<pre> tdb_block_menu atts: </pre>';
-            //echo '<pre>';
-            //print_r($atts);
-            //echo '</pre>';
-        }
+//        // id we're on td composer
+//        if ( tdc_state::is_live_editor_ajax() || tdc_state::is_live_editor_iframe() ){
+//            //echo '<pre>';
+//            //print_r();
+//            //echo '</pre>';
+//        }
+//
+//        // if we're on the front end
+//        if ( !tdc_state::is_live_editor_ajax() && !tdc_state::is_live_editor_iframe() ) {
+//            //echo PHP_EOL .'<pre> tdb_block_menu atts: </pre>';
+//            //echo '<pre>';
+//            //print_r($atts);
+//            //echo '</pre>';
+//        }
 
         $this->unique_block_class = $this->block_uid;
 
@@ -1582,7 +1600,7 @@ class tdb_header_menu extends td_block {
         } else {
             $tdb_menu_instance = tdb_menu::get_instance( $this->get_all_atts() );
 
-            add_filter( 'wp_nav_menu_objects', array( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 10, 2 );
+            add_filter( 'wp_nav_menu_objects', array( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 99999, 2 );
 
             ob_start();
 

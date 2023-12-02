@@ -232,6 +232,27 @@ body.tdc-active-helper .tdc-element:after {
 .tdc-changed {
   opacity: 0.5;
 }
+/* ----------------------------------------------------------------------------------------
+  When a element set to be hidden from the 'display' option in the CSS tab, it displays a
+  label in composer
+*/
+.tdc-hidden-elem-label {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 5px 7px 5px;
+  background-color: #000;
+  font-size: 12px;
+  line-height: 1.15;
+  color: #fff;
+  pointer-events: none;
+  z-index: 99999;
+}
+.tdc-hidden-elem-label:after {
+  content: 'Hidden';
+}
 .tdc-element-empty {
   border: 1px solid #4eb2ec;
   width: 100%;
@@ -305,7 +326,6 @@ body.tdc-active-helper .tdc-element:after {
   left: 0;
   top: 0;
   width: 0;
-  min-height: 50px;
   display: none;
 }
 #tdc-mask-content {

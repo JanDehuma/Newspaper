@@ -5,7 +5,7 @@ class td_resources_load {
     /**
      * Maintains a list of all styles loaded.
      */
-    private static array $styles_loaded = array();
+    private static $styles_loaded = array();
 
 
 
@@ -13,7 +13,7 @@ class td_resources_load {
     /**
      * Maintains a list of all scripts loaded.
      */
-    private static array $scripts_loaded = array();
+    private static $scripts_loaded = array();
 
 
     /**

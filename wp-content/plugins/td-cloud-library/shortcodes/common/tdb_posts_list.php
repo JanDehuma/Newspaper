@@ -362,7 +362,7 @@ class tdb_posts_list extends td_block {
                 }
                 /* @pag_color_a */
                 body .$unique_block_class .tdb-s-pagination-item.tdb-s-pagination-active {
-                    color: @pag_color_h;
+                    color: @pag_color_a;
                 }
                 
                 /* @modal_bg */
@@ -763,6 +763,8 @@ class tdb_posts_list extends td_block {
             'perPage' => $this->get_att('per_page') != '' ? $this->get_att('per_page') : 15,
             'currentPage' => 1,
 
+            'showInComposer' => $show_in_composer,
+            'showNotifInComposer' => $show_notif_in_composer
         );
 
         $buffy .= '<div class="' . $this->get_block_classes() . '" ' . $this->get_block_html_atts() . '>';

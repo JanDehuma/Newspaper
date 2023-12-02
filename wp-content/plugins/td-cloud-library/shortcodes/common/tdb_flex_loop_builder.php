@@ -721,6 +721,16 @@ class tdb_flex_loop_builder extends td_block {
 		/* -- Set the total posts count -- */
 		self::$posts_count = !empty( $this->td_query->posts ) ? count( $this->td_query->posts ) : 0;
 
+        // in composer flag .. for debugging @todo remove
+        $in_composer = td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax();
+        //if ( !$in_composer ) {
+        //    echo '<pre>' . print_r( $atts, true ) . '</pre>';
+        //    echo '<pre>' . print_r( __CLASS__, true ) . '</pre>';
+        //    echo '<pre>' . print_r( $this->td_query, true ) . '</pre>';
+        //    //echo '<pre>' . print_r( count( $this->td_query->posts ), true ) . '</pre>';
+        //    //echo '<pre>' . print_r( $this->td_query->posts, true ) . '</pre>';
+        //}
+
 
 		/* -- Block atts -- */
 	    // Get the active module template id

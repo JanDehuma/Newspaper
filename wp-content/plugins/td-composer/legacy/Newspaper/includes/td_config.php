@@ -3008,6 +3008,41 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
                     'magazine'
                 ),
             ),
+            'urban_observer' => array(
+                'text' => 'Urban Observer',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/urban_observer/',
+                'img' => TDC_URL_DEMO . '/urban_observer/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_urban_observer_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Opt-In Builder',
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'membership',
+                    'magazine'
+                )
+            ),
+            'echoverse' => array(
+                'text' => 'EchoVerse',
+                'folder' => TDC_PATH_LEGACY . '/includes/demos/echoverse/',
+                'img' => TDC_URL_DEMO . '/echoverse/screenshot.png',
+                'demo_url' => 'https://demo.tagdiv.com/newspaper_echoverse_pro/',
+                'td_css_generator_demo' => false,                // must have a td_css_generator_demo.php in demo's folder
+                'uses_custom_style_css' => false,                 // load a custom demo_style.less - must also be added to td_less_style.css.php
+                'required_plugins' => array(                    // required plugins for the demo to work properly
+                    'tagDiv Cloud Library',
+                    'tagDiv Opt-In Builder',
+                ),
+                'type' => array(
+                    'pro',
+                    'latest',
+                    'magazine'
+                )
+            ),
             'towntalk_pro' => array(
                 'text' => 'Town Talk',
                 'folder' => TDC_PATH_LEGACY . '/includes/demos/towntalk_pro/',
@@ -6308,6 +6343,7 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
 			    'Fans' => __('Fans', 'newspaper'),
 			    'Follow' => __('Follow', 'newspaper'),
 			    'Followers' => __('Followers', 'newspaper'),
+                'Members' => __('Members', 'newspaper'),
 			    'Subscribe' => __('Subscribe', 'newspaper'),
 			    'Subscribers' => __('Subscribers', 'newspaper'),
 
@@ -6505,6 +6541,9 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
                 'Create new term' => __('Create new term', 'newspaper'),
                 'Parent' => __('Parent', 'newspaper'),
                 'Description' => __('Description', 'newspaper'),
+
+                // Delete bookmarks button
+                'Delete bookmarks' => __('Delete bookmarks', 'newspaper'),
             );
 		}, 11);
 
@@ -6807,7 +6846,14 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
             $filter_array = array_merge(
                 $filter_array,
                 array(
-                     array(
+                    array(
+                        "param_name" => "separator",
+                        "type" => "horizontal_separator",
+                        "value" => "",
+                        "class" => "tdc-separator-small",
+                        "group" => '',
+                    ),
+                    array(
                         "param_name" => "open_in_new_window",
                         "type" => "checkbox",
                         "value" => '',
@@ -6815,6 +6861,13 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
                         "description" => "The posts will be opened in a new tab. This option adds target blank on image thumb and post title links.",
                         "holder" => "div",
                         "class" => ""
+                    ),
+                    array(
+                        "param_name" => "separator",
+                        "type" => "horizontal_separator",
+                        "value" => "",
+                        "class" => "tdc-separator-small",
+                        "group" => '',
                     ),
                     array(
                         "param_name"  => "show_modified_date",
@@ -6856,6 +6909,26 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
                         "holder" => "div",
                         "class" => "",
                         "info_img" => "",
+                    ),
+                    array(
+                        "param_name" => "separator",
+                        "type" => "horizontal_separator",
+                        "value" => "",
+                        "class" => "tdc-separator-small",
+                        "group" => '',
+                    ),
+                    array(
+                        "param_name"  => "review_source",
+                        "type"        => "dropdown",
+                        "value"       => array(
+                            'Author review' => '',
+                            'User reviews' => 'user_reviews',
+                        ),
+                        "heading"     => 'Reviews source',
+                        "description" => "",
+                        "holder"      => "div",
+                        "class"       => "tdc-dropdown-big",
+                        "group"       => "",
                     )
                 )
             );
@@ -6864,6 +6937,13 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
         $filter_array = array_merge(
             $filter_array,
             array(
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => "tdc-separator-small",
+                    "group" => '',
+                ),
                 array(
                     'param_name' => 'el_class',
                     'type' => 'textfield',
@@ -9668,6 +9748,26 @@ $ad_desc = 'Paste your ad code here. Google AdSense will be made responsive auto
                     ),
                     td_config_helper::get_map_block_shadow_array('shadow', 'Module Shadow', 0, 0, 0, "Module", '', 0, true, '', 'https://cloud.tagdiv.com/help/module_shadow.png', '' ),
                     array(
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => '',
+                        ),
+                        array(
+                            "param_name"  => "review_source",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Author review' => '',
+                                'User reviews' => 'user_reviews',
+                            ),
+                            "heading"     => 'Reviews source',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                        ),
                         array(
                             "param_name" => "separator",
                             "type"       => "text_separator",

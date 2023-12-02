@@ -443,6 +443,17 @@ class tdb_single_user_reviews_form extends td_block {
         }
 
 
+        // Check if the current user/visitor has reached their limit of posting
+        // new reviews
+        $limit = $this->get_att( 'user_limit' ) != '' ? (int)$this->get_att( 'user_limit' ) : 1;
+        $limit_reached = false;
+
+        $post_user_reviews_ips_count = array_count_values( $post_user_reviews_ips );
+        $user_ip_count = isset( $post_user_reviews_ips_count[$user_ip] ) ? $post_user_reviews_ips_count[$user_ip] : 0;
+
+        $limit_reached = $user_ip_count >= $limit;
+
+
         // Header
         $header_text = $this->get_att('header_txt') != '' ? $this->get_att('header_txt') : __td( 'Leave a review', TD_THEME_NAME );
         $header_tag = $this->get_att('header_tag') != '' ? $this->get_att('header_tag') : 'h2';
@@ -524,7 +535,7 @@ class tdb_single_user_reviews_form extends td_block {
                         $buffy .= "\n" .'</script>' . "\n\n";
                         $buffy .= '<div class="must-log-in td-login-review"><a class="td-login-modal-js" data-effect="mpf-td-login-effect" href="#login-form">' . $login_txt . '</a></div>';
                     }
-                } elseif( ( $in_composer && $show_notif != '' ) || ( TD_DEPLOY_MODE != 'dev' && !$in_composer && in_array( $user_ip, $post_user_reviews_ips ) ) ) {
+                } elseif( ( $in_composer && $show_notif != '' ) || ( !$in_composer && $limit_reached ) ) {
                     $buffy .= '<div class="tdb-s-notif tdb-s-notif-info"><div class="tdb-s-notif-descr">' . $limit_notif . '</div></div>';
                 } else {
                     $buffy .= '<form action="#" id="tdc-review-form" class="tdb-s-form tdb-s-content">';

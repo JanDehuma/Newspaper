@@ -13,6 +13,8 @@ $av_rating      = $product->get_average_rating();
 $average_rating = ( $av_rating / 5 ) * 100;
 if ( $average_rating > 0 && $show_product_rating ) {
 	$rating_text = __( 'Rated ', 'wp-carousel-free' ) . $av_rating . __( ' out of 5', 'wp-carousel-free' );
+
+	do_action( 'wpcp_before_product_rating_woocommerce' );
 	?>
 	<div class="wpcp-product-rating woocommerce">
 		<div class="woocommerce-product-rating">
@@ -22,4 +24,5 @@ if ( $average_rating > 0 && $show_product_rating ) {
 		</div>
 	</div>
 	<?php
+	do_action( 'wpcp_after_product_rating_woocommerce' );
 }

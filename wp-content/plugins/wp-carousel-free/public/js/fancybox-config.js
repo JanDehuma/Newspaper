@@ -4,7 +4,7 @@ jQuery(document).ready(function ($) {
 		var carousel_type = jQuery(this).data('carousel_type');
 
 		if ($('#' + carousel_id + '.wpcp-standard').length) {
-			var selector = '#' + carousel_id + '.wpcp-carousel-section .swiper-slide [data-fancybox="wpcp_view"]';
+			var selector = '#' + carousel_id + '.wpcp-carousel-section .swiper-slide:not(.swiper-slide-duplicate) [data-fancybox="wpcp_view"]';
 		} else {
 			var selector = '#' + carousel_id + '.wpcp-carousel-section .wpcp-single-item [data-fancybox="wpcp_view"]';
 		}

@@ -12,6 +12,7 @@
  * @property tdb_method post_subtitle
  * @property tdb_method post_date
  * @property tdb_method post_modified
+ * @property tdb_method post_age
  * @property tdb_method post_author
  * @property tdb_method post_comments_count
  * @property tdb_method post_views
@@ -41,6 +42,7 @@
  * @property tdb_method post_item_scope
  * @property tdb_method post_item_scope_meta
  * @property tdb_method menu
+ * @property tdb_method list_menu
  *
  */
 class tdb_state_single extends tdb_state_base {
@@ -586,6 +588,8 @@ class tdb_state_single extends tdb_state_base {
                         if( tdb_state_template::has_wp_query() && tdb_state_template::has_shortcode('tdb_single_toc') ) {
                             $headings = tdb_toc::extractHeadings($content);
 
+                            //var_dump($headings);
+
                             if( !empty( $headings ) ) {
                                 foreach ( $headings as $heading ) {
                                     $heading_slug = $heading['slug'];
@@ -610,7 +614,12 @@ class tdb_state_single extends tdb_state_base {
                                 }
 
                                 if( !empty($search) && !empty($replace) && count($search) == count($replace) ) {
-                                    $content = str_replace($search, $replace, $content);
+                                    foreach( $search as $key => $value ) {
+                                        $pos = strpos( $content, $value );
+                                        if( $pos !== false ) {
+                                            $content = substr_replace( $content, $replace[$key], $pos, strlen( $value ) );
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -924,6 +933,11 @@ class tdb_state_single extends tdb_state_base {
 
             $post_categories = get_the_terms( $post->ID, 'category' );
 
+            $featured_cat_name = TD_FEATURED_CAT;
+            $post_categories = array_filter( $post_categories, function( $category ) use ( $featured_cat_name ) {
+                return $category->name != $featured_cat_name;
+            } );
+
             if ( isset($atts['cat_order']) and $atts['cat_order'] === '' && false !== $post_categories && !is_wp_error( $post_categories ) ) {
                 $sorted_categories = array();
                 self::sort_terms_hierarchically( $post_categories, $sorted_categories );
@@ -1018,6 +1032,13 @@ class tdb_state_single extends tdb_state_base {
 
                     $post_terms = get_the_terms($post->ID, $tax);
                     if ( false !== $post_terms && !is_wp_error($post_terms) ) {
+
+                        if( $tax == 'category' ) {
+                            $featured_cat_name = TD_FEATURED_CAT;
+                            $post_terms = array_filter( $post_terms, function( $term ) use ( $featured_cat_name ) {
+                                return $term->name != $featured_cat_name;
+                            } );
+                        }
 
                         $sorted_terms = array();
                         // sort terms hierarchically
@@ -1117,9 +1138,9 @@ class tdb_state_single extends tdb_state_base {
             }
 
             $post_date_array = array(
-                    'date' => '',
-                    'time' => '',
-                    'human_time_diff' => ''
+                'date' => '',
+                'time' => '',
+                'human_time_diff' => ''
             );
             $post = $this->get_wp_query()->post;
 
@@ -1143,8 +1164,6 @@ class tdb_state_single extends tdb_state_base {
 
             $post_time_u = get_the_time('U', $post->ID );
             $diff = (int) abs( $current_time - $post_time_u );
-
-//            $post_date_array['human_time_diff'] = '';
 
             if ( $diff < WEEK_IN_SECONDS ) {
                 $post_date_array['human_time_diff'] = human_time_diff( $post_time_u, $current_time );
@@ -1208,6 +1227,31 @@ class tdb_state_single extends tdb_state_base {
             }
 
             return $post_modified_date_data;
+        };
+
+
+        // post date
+        $this->post_age = function () {
+
+            $dummy_timestamp = strtotime( date( DATE_W3C, strtotime( "-1 week" ) ) );
+
+            $dummy_data = array(
+                'timestamp' => $dummy_timestamp,
+                'age' => human_time_diff( $dummy_timestamp )
+            );
+
+            if ( !$this->has_wp_query() ) {
+                return $dummy_data;
+            }
+
+            $post = $this->get_wp_query()->post;
+            $post_timestamp = get_the_time('U', $post->ID );
+
+            return array(
+                'timestamp' => $post_timestamp,
+                'age' => human_time_diff( get_the_time('U', $post->ID ) )
+            );
+
         };
 
 
@@ -2706,6 +2750,7 @@ class tdb_state_single extends tdb_state_base {
             // Shortcode options
             $source = isset( $atts['source'] ) && $atts['source'] != '' ? $atts['source'] : '';
             $images_size = isset( $atts['images_size'] ) && $atts['images_size'] != '' ? $atts['images_size'] : 'td_1068x0';
+            $modal_images_size = isset( $atts['modal_imgs_size'] ) && $atts['modal_imgs_size'] != '' ? $atts['modal_imgs_size'] : 'td_1920x0';
 
 
             // Create an array with dummy images
@@ -2715,6 +2760,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 1',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 ),
                 array(
@@ -2722,6 +2768,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 2',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 ),
                 array(
@@ -2729,6 +2776,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 3',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 ),
                 array(
@@ -2736,6 +2784,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 4',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 ),
                 array(
@@ -2743,6 +2792,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 5',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 ),
                 array(
@@ -2750,6 +2800,7 @@ class tdb_state_single extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 6',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                     'caption' => 'Sample caption'
                 )
             );
@@ -2840,6 +2891,22 @@ class tdb_state_single extends tdb_state_base {
                             $image_info = td_util::attachment_get_full_info( $gallery_image_id, $images_size );
 
                             $gallery_image['url'] = $image_info['src'];
+                        }
+
+                        // Get the modal image URL
+                        if( td_util::get_option('tds_thumb_' . $modal_images_size ) != 'yes' ) {
+                            // The thumb size is disabled, so show a placeholder thumb
+                            $thumb_disabled_path = td_global::$get_template_directory_uri;
+                            if ( strpos( $images_size, 'td_' ) === 0 ) {
+                                $thumb_disabled_path = td_api_thumb::get_key( $images_size, 'no_image_path' );
+                            }
+
+                            $gallery_image['url_modal'] = $thumb_disabled_path . '/images/thumb-disabled/' . $modal_images_size . '.png';
+                        } else {
+                            // The thumbnail size is enabled in the panel, try to get the image
+                            $image_info = td_util::attachment_get_full_info( $gallery_image_id, $modal_images_size );
+
+                            $gallery_image['url_modal'] = $image_info['src'];
                         }
 
                         $gallery_images[] = $gallery_image;
@@ -3132,7 +3199,7 @@ class tdb_state_single extends tdb_state_base {
 
             if ( !$this->has_wp_query() ) {
                 $tdb_menu_instance = tdb_menu::get_instance( $atts );
-                add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 10, 2 );
+                add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 99999, 2 );
                 $wp_nav_menu = wp_nav_menu(
                     array(
                         'menu' => $menu_id,
@@ -3155,7 +3222,7 @@ class tdb_state_single extends tdb_state_base {
             $wp_query = $this->get_wp_query();
 
             $tdb_menu_instance = tdb_menu::get_instance( $atts );
-            add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 10, 2 );
+            add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 99999, 2 );
             $wp_nav_menu = wp_nav_menu(
                 array(
                     'menu' => $menu_id,
@@ -3173,6 +3240,47 @@ class tdb_state_single extends tdb_state_base {
 
             $wp_query = $template_wp_query;
 
+            return $wp_nav_menu;
+        };
+
+        // list menu
+        $this->list_menu = function ( $atts ) {
+            $menu_id = ( isset( $atts['menu_id'] ) and $atts['menu_id'] != '' ) ? $atts['menu_id'] : ( ! empty(get_theme_mod('nav_menu_locations')['header-menu'] ) ? get_theme_mod('nav_menu_locations')['header-menu'] : '' );
+//            var_dump($menu_id);
+
+            $depth = $atts['depth'];
+            // Menu display
+            $display = $atts['inline'];
+            $menu_display = $display  == 'yes' ? 'horizontal' : ( $display  != '' ? $display  : 'vertical' );
+
+            if ( !$this->has_wp_query() ) {
+
+                $wp_nav_menu = wp_nav_menu(
+                    array(
+                        'menu' => $menu_id,
+                        'walker' => new td_block_list_menu_accordion($atts),
+                        'depth' => $menu_display == 'horizontal' ? 1 : ( $depth != '' ? $depth : 0 ),
+                        'echo' => false,
+                    )
+                );
+
+                return $wp_nav_menu;
+            }
+
+            global $wp_query;
+            $template_wp_query = $wp_query;
+            $wp_query = $this->get_wp_query();
+
+            $wp_nav_menu = wp_nav_menu(
+                array(
+                    'menu' => $menu_id,
+                    'walker' => new td_block_list_menu_accordion($atts),
+                    'depth' => $menu_display == 'horizontal' ? 1 : ( $depth != '' ? $depth : 0 ),
+                    'echo' => false,
+                )
+            );
+
+            $wp_query = $template_wp_query;
             return $wp_nav_menu;
         };
 

@@ -48,8 +48,8 @@ class td_metabox_generator {
                     }
                     break;
 
-                //default : textfield
-                default:
+                case 'textfield':
+
                     $this->mb->the_field($array_field['param_name']);
                     $value_input = $this->mb->get_the_value();
                     if (!empty($value_input)) {

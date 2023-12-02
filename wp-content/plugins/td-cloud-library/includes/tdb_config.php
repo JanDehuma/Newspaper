@@ -1506,7 +1506,8 @@ class tdb_config {
                             "description" => "Applicable only for posts newer than 7 days",
                             "holder" => "div",
                             "class" => "",
-                            "info_img" => "https://cloud.tagdiv.com/help/post_date_time_ago.png"
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_time_ago.png",
+                            "toggle_enable_params" => "time_ago"
                         ),
 	                    array(
 		                    "param_name" => "additional_text",
@@ -1516,7 +1517,8 @@ class tdb_config {
 		                    "description" => "",
 		                    "placeholder" => "",
 		                    "holder" => "div",
-		                    "class" => "tdc-textfield-big"
+		                    "class" => "tdc-textfield-big",
+                            "toggle_enabled_by" => "time_ago"
 	                    ),
                         array(
                             "param_name" => "additional_text_before",
@@ -1526,7 +1528,8 @@ class tdb_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
-                            "info_img" => "https://cloud.tagdiv.com/help/post_time_ago_before.png"
+                            "info_img" => "https://cloud.tagdiv.com/help/post_time_ago_before.png",
+                            "toggle_enabled_by" => "time_ago"
                         ),
                         array(
                             "param_name" => "separator",
@@ -1784,6 +1787,192 @@ class tdb_config {
                     ),
                     td_config_helper::get_map_block_font_array( 'f_date', true, 'Date text' ),
                     td_config_helper::get_map_block_font_array( 'f_additional', false, 'Additional text' ),
+                    self::get_block_style()
+                )
+            )
+        );
+
+        td_api_block::add('tdb_single_age',
+            array(
+                'map_in_td_composer' => true,
+                "name" => 'Single Post Publish Age',
+                "base" => "tdb_single_age",
+                'tdc_category' => 'Single post',
+                'file' => TDB_TEMPLATE_BUILDER_DIR . '/shortcodes/single/tdb_single_age.php',
+                'tdc_style_params' => array(
+                    'additional_text',
+                    'el_class'
+                ),
+                "params" => array_merge(
+                    array(
+                        array(
+                            "param_name" => "hide",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => 'Hide when age is newer/older than',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "toggle_enable_params" => "hide"
+                        ),
+                        array(
+                            "param_name" => "hide_cond",
+                            "type" => "dropdown",
+                            "value" => array(
+                                'Newer than' => '',
+                                'Older than' => 'older',
+                            ),
+                            "heading" => 'Hide when age is',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "toggle_enabled_by" => "hide"
+                        ),
+	                    array(
+		                    "param_name" => "hide_cond_val",
+		                    "type" => "textfield",
+		                    "value" => '',
+		                    "heading" => 'Number of days',
+		                    "description" => "",
+		                    "placeholder" => "7",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-small",
+                            "toggle_enabled_by" => "hide"
+	                    ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => "",
+                        ),
+                        array(
+                            "param_name" => "make_inline",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => 'Display inline',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_inline.png"
+                        ),
+                        array(
+                            "param_name" => "float_right",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => 'Align block to right',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_align_right.png"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Additional text',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                        ),
+	                    array(
+		                    "param_name" => "additional_text",
+		                    "type" => "textfield",
+		                    "value" => 'ago',
+		                    "heading" => 'Additional text',
+		                    "description" => "",
+		                    "placeholder" => "",
+		                    "holder" => "div",
+		                    "class" => "tdc-textfield-big"
+	                    ),
+                        array(
+                            "param_name" => "additional_text_before",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => 'Display additional text before the date',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_time_ago_before.png"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Icon',
+                            "value"      => "",
+                            "class"      => "tdc-separator-small",
+                        ),
+                        array(
+                            'param_name' => 'tdicon',
+                            'type' => 'icon',
+                            'heading' => 'Icon',
+                            'class' => 'tdc-textfield-small',
+                            'value' => '',
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_icon.png"
+                        ),
+                        array(
+                            "param_name" => "icon_size",
+                            "type" => "textfield-responsive",
+                            "value" => '',
+                            "heading" => 'Icon size',
+                            "description" => "",
+                            "placeholder" => "14",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-small",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_icon_size.png"
+                        ),
+                        array(
+                            "param_name" => "icon_space",
+                            "type" => "textfield-responsive",
+                            "value" => '',
+                            "heading" => 'Icon space',
+                            "description" => "",
+                            "placeholder" => "5",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-small",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_icon_space.png"
+                        ),
+                        array(
+                            'param_name' => 'icon_align',
+                            'type' => 'range-responsive',
+                            'value' => '0',
+                            'heading' => 'Icon align',
+                            'description' => '',
+                            'class' => 'tdc-textfield-small',
+                            'range_min' => '-10',
+                            'range_max' => '10',
+                            'range_step' => '1',
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_icon_align.png"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type"       => "text_separator",
+                            'heading'    => 'Style',
+                            "value"      => "",
+                            "class"      => "",
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Date text color',
+                            "param_name"  => "date_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_text_color.png"
+                        ),
+                        array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Date icon color',
+                            "param_name"  => "icon_color",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "",
+                            "info_img" => "https://cloud.tagdiv.com/help/post_date_text_color.png"
+                        ),
+                    ),
+                    td_config_helper::get_map_block_font_array( 'f_date', true, 'Date text' ),
                     self::get_block_style()
                 )
             )
@@ -13307,7 +13496,17 @@ class tdb_config {
                             "holder" => "div",
                             "class" => ""
                         ),
-                         array(
+                        array(
+                            'param_name' => 'user_limit',
+                            'type' => 'textfield',
+                            'value' => '',
+                            'heading' => 'User limit',
+                            'description' => 'Set the maximum number of reviews a user can leave on an article.',
+                            'placeholder' => '1',
+                            'class' => 'tdc-textfield-small',
+                            "group" => "",
+                        ),
+                        array(
                             'param_name' => 'review_login_txt',
                             'type' => 'textarea_raw_html',
                             'value' => '',
@@ -15405,6 +15604,10 @@ class tdb_config {
                                 'H1' => 'h1',
                                 'H2' => 'h2',
                                 'H4' => 'h4',
+                                'H5' => 'h5',
+                                'H6' => 'h6',
+                                'Div' => 'div',
+                                'P' => 'p',
                             ),
                             "heading" => 'Title tag (SEO)',
                             "description" => "",
@@ -15952,6 +16155,20 @@ class tdb_config {
                             "holder" => "div",
                             "class" => "tdc-textfield-small",
                             "info_img" => "https://cloud.tagdiv.com/help/category_bg_image_height.png",
+                        ),
+                        array(
+                            "param_name" => "image_style",
+                            "type" => "dropdown-responsive",
+                            "value" => array(
+                                'Cover' => '',
+                                'Contain' => 'contain',
+                                'No repeat' => 'no-repeat',
+                                'Repeat' => 'repeat'
+                            ),
+                            "heading" => 'Image style',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
                         ),
                         array(
                             "param_name" => "image_alignment",
@@ -31358,13 +31575,23 @@ class tdb_config {
                 "params" => array_merge(
                     array(
                         array(
-                            "param_name" => "make_inline",
-                            "type" => "checkbox",
+                            "param_name" => "post_type",
+                            "type" => "textfield",
                             "value" => '',
-                            "heading" => 'Display inline',
+                            "heading" => 'Post type',
                             "description" => "",
+                            "placeholder" => "post",
                             "holder" => "div",
-                            "class" => ""
+                            "class" => "tdc-textfield-big"
+                        ),
+
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            'heading' => 'Layout',
+                            "value" => "",
+                            "class" => "",
+                            "group" => '',
                         ),
                         array(
                             "param_name" => "add_txt",
@@ -31375,6 +31602,12 @@ class tdb_config {
                             "placeholder" => "POSTS",
                             "holder" => "div",
                             "class" => "tdc-textfield-big"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
                         ),
                         array(
                             "param_name" => "count_padding",
@@ -31397,6 +31630,15 @@ class tdb_config {
                             "class" => "tdc-textfield-small"
                         ),
                         array(
+                            "param_name" => "make_inline",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => 'Display inline',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => ""
+                        ),
+                        array(
                             "param_name" => "content_align_horizontal",
                             "type" => "dropdown",
                             "value" => array(
@@ -31410,11 +31652,14 @@ class tdb_config {
                             'tdc_dropdown_images' => true,
                             "class" => "tdc-visual-selector tdc-add-class",
                         ),
+
                         array(
                             "param_name" => "separator",
-                            "type" => "horizontal_separator",
+                            "type" => "text_separator",
+                            'heading' => 'Style',
                             "value" => "",
                             "class" => "",
+                            "group" => '',
                         ),
                         array(
                             "type"        => "colorpicker",
@@ -31436,8 +31681,15 @@ class tdb_config {
                             "description" => '',
                             "group"       => "",
                         ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "horizontal_separator",
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                        ),
                     ),
                     td_config_helper::get_map_block_font_array( 'f_count', true, 'Counter text' ),
+
                     self::get_block_style()
                 )
             )
@@ -36547,6 +36799,17 @@ class tdb_config {
                             "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
                         ),
                         array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Review stars color',
+                            "param_name"  => "rev_txt",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_color.png",
+                        ),
+                        array(
                             "param_name" => "separator",
                             "type"       => "horizontal_separator",
                             "value"      => "",
@@ -39290,6 +39553,17 @@ class tdb_config {
                             "info_img" => "https://cloud.tagdiv.com/help/module_comment_text.png",
                         ),
                         array(
+                            "type"        => "colorpicker",
+                            "holder"      => "div",
+                            "class"       => "",
+                            "heading"     => 'Review stars color',
+                            "param_name"  => "rev_txt",
+                            "value"       => '',
+                            "description" => '',
+                            "group"       => "Style",
+                            "info_img" => "https://cloud.tagdiv.com/help/module_review_color.png",
+                        ),
+                        array(
                             "param_name" => "separator",
                             "type"       => "horizontal_separator",
                             "value"      => "",
@@ -41226,6 +41500,7 @@ class tdb_config {
                 'tdc_style_params' => array(
                     'source',
                     'acf_field',
+                    'nav_for',
                     'autoplay',
                     'autoplay_speed',
                     'images_size',
@@ -41261,6 +41536,16 @@ class tdb_config {
                             "options_to_disable" => ( tdb_state_template::get_template_type() == 'single' || tdb_state_template::get_template_type() == 'cpt' || tdb_state_template::get_template_type() == 'module' ? '' : 'post_gallery' ) . ( !class_exists('ACF') ? ' acf_field' : '' )
                         ),
                         self::get_acf_fields_param( array(), array('gallery'), $tdb_gallery_location ),
+                        array(
+                            "param_name" => "nav_for",
+                            "type" => "textfield",
+                            "value" => '',
+                            "heading" => "As nav for",
+                            "description" => "Set this gallery to be the navigation of another gallery (specify class name of the other slider).",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                            "placeholder" => "",
+                        ),
 
                         array(
                             "param_name" => "separator",
@@ -41369,6 +41654,29 @@ class tdb_config {
                             "description" => "",
                             "holder" => "div",
                             "class" => "",
+                            "toggle_enable_params" => "modal_imgs"
+                        ),
+                        array(
+                            "param_name"  => "modal_imgs_size",
+                            "type"        => "dropdown",
+                            "value"       => array(
+                                'Full - Default - 1920x0px'  => '',
+                                '-- [No crop] --' => '__',
+                                'XSmall - 150x0px' => 'td_150x0',
+                                'Small - 300x0px' => 'td_300x0',
+                                'Medium - 696x0px' => 'td_696x0',
+                                'Large - Default - 1068x0px'  => 'td_1068x0',
+                                '-- [Other sizes] --' => '__',
+                                '218x150px' => 'td_218x150',
+                                '324x400px'  => 'td_324x400',
+                                '485x360' => 'td_485x360'
+                            ),
+                            "heading"     => 'Modal images size',
+                            "description" => "",
+                            "holder"      => "div",
+                            "class"       => "tdc-dropdown-big",
+                            "group"       => "",
+                            "toggle_enabled_by" => "modal_imgs"
                         ),
                         array(
                             "param_name" => "height",
@@ -41431,6 +41739,74 @@ class tdb_config {
                             "holder" => "div",
                             "class" => "tdc-textfield-big",
                             "placeholder" => "0"
+                        ),
+                        array(
+                            "param_name" => "separator",
+                            "type" => "text_separator",
+                            'heading' => 'Active slide',
+                            "value" => "",
+                            "class" => "tdc-separator-small",
+                            "group" => '',
+                        ),
+                        array(
+                            "param_name" => "active_highlight",
+                            "type" => "checkbox",
+                            "value" => '',
+                            "heading" => "Highlight active slide",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "",
+                            "toggle_enable_params" => "active_highlight",
+                        ),
+                        array(
+                            "param_name" => "all_border_a",
+                            "type" => "textfield-responsive",
+                            "value" => '',
+                            "heading" => "Border size",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                            "placeholder" => "inherit",
+                            "toggle_enabled_by" => "active_highlight",
+                        ),
+                        array(
+                            "param_name" => "all_border_a_style",
+                            "type" => "dropdown-responsive",
+                            "value" => array(
+                                'Inherit' => '',
+                                'Solid' => 'solid',
+                                'Dashed' => 'dashed',
+                                'Dotted' => 'dotted',
+                                'Double' => 'double',
+                            ),
+                            "heading" => 'Border style',
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-dropdown-big",
+                            "group" => "",
+                            "toggle_enabled_by" => "active_highlight",
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "",
+                            "heading" => 'Border color',
+                            "param_name" => "all_border_a_color",
+                            "value" => '',
+                            "description" => '',
+                            "group" => "",
+                            "toggle_enabled_by" => "active_highlight",
+                        ),
+                        array(
+                            "param_name" => "border_radius_a",
+                            "type" => "textfield-responsive",
+                            "value" => '',
+                            "heading" => "Border radius",
+                            "description" => "",
+                            "holder" => "div",
+                            "class" => "tdc-textfield-big",
+                            "placeholder" => "inherit",
+                            "toggle_enabled_by" => "active_highlight",
                         ),
                         array(
                             "param_name" => "separator",
@@ -41712,7 +42088,7 @@ class tdb_config {
                         array(
                             "type" => "colorpicker",
                             "holder" => "div",
-                            "class" => "tdc-colorpicker-double-a",
+                            "class" => "tdc-colorpicker-triple-a",
                             "heading" => 'Dots color',
                             "param_name" => "dots_color",
                             "value" => '',
@@ -41723,9 +42099,20 @@ class tdb_config {
                         array(
                             "type" => "colorpicker",
                             "holder" => "div",
-                            "class" => "tdc-colorpicker-double-b",
-                            "heading" => 'Dots hover/active color',
+                            "class" => "tdc-colorpicker-triple-b",
+                            "heading" => 'Dots hover color',
                             "param_name" => "dots_color_h",
+                            "value" => '',
+                            "description" => '',
+                            "group" => "",
+                            "toggle_enabled_by" => "nav_dots"
+                        ),
+                        array(
+                            "type" => "colorpicker",
+                            "holder" => "div",
+                            "class" => "tdc-colorpicker-triple-c",
+                            "heading" => 'Dots active color',
+                            "param_name" => "dots_color_a",
                             "value" => '',
                             "description" => '',
                             "group" => "",
@@ -58892,23 +59279,6 @@ class tdb_config {
 
                     self::get_map_block_module_tpl_params_array('Module'),
 
-                    array(
-						array(
-							'param_name' => 'css',
-							'value' => '',
-							'type' => 'css_editor',
-							'heading' => 'Css',
-							'group' => 'Design options',
-						),
-						array(
-							'param_name' => 'tdc_css',
-							'value' => '',
-							'type' => 'tdc_css_editor',
-							'heading' => '',
-							'group' => 'Design options',
-						),
-					),
-
 	                self::get_block_style()
 				),
 			)
@@ -60313,7 +60683,7 @@ array(
 		td_api_block::add('tdb_module_taxonomies',
 			array(
 				'map_in_td_composer' => true,
-				"name" => 'Module Taxonomies',
+				"name" => 'Module Categories/Taxonomies',
 				"base" => "tdb_module_taxonomies",
 				'tdc_category' => 'Modules elements',
 				'file' => TDB_TEMPLATE_BUILDER_DIR . '/shortcodes/module/tdb_module_taxonomies.php',
@@ -61750,6 +62120,32 @@ array(
         );
 
 	    $filter_array = apply_filters( 'td_cloud_library_loop_map_filter_array', $filter_array, $group );
+
+        $filter_array = array_merge(
+            $filter_array,
+            array(
+                array(
+                    "param_name" => "separator",
+                    "type" => "horizontal_separator",
+                    "value" => "",
+                    "class" => "tdc-separator-small",
+                    "group" => $group,
+                ),
+                array(
+                    "param_name"  => "review_source",
+                    "type"        => "dropdown",
+                    "value"       => array(
+                        'Author review' => '',
+                        'User reviews' => 'user_reviews',
+                    ),
+                    "heading"     => 'Reviews source',
+                    "description" => "",
+                    "holder"      => "div",
+                    "class"       => "tdc-dropdown-big",
+                    "group"       => $group,
+                )
+            )
+        );
 
         return $filter_array;
 

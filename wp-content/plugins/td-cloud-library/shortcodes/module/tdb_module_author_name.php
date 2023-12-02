@@ -22,6 +22,7 @@ class tdb_module_author_name extends tdb_module_template_part {
 				margin: 0;
 			}
 			.tdb_module_author_name a {
+				transform: translateZ(0);
 				font-family: 'Open Sans', 'Open Sans Regular', sans-serif;
 				font-size: 11px;
 				font-weight: 700;
@@ -149,14 +150,13 @@ class tdb_module_author_name extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= '<a href="' . $author_url . '"' . $link_target . '>';
 				$buffy .= $author_name;
 			$buffy .= '</a>';

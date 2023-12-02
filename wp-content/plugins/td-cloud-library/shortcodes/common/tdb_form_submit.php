@@ -40,7 +40,7 @@ class tdb_form_submit extends td_block {
                 .tdb_form_submit .tdb-s-notif {
                     margin-bottom: 28px;
                 }
-                .tdb_form_submit .tdb-s-form > .tdb-s-notif {
+                .tdb_form_submit .tdb-s-form > .tdb-s-notif:last-child {
                     margin-bottom: 0;
                 }
                 .tdb_form_submit .tds-pb-icon {

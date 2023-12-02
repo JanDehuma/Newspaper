@@ -607,7 +607,7 @@ class tdb_toc {
 
 
                 /* -- Build the heading slug (used like an ID) -- */
-                $heading_label = $heading['heading_contents'];
+                $heading_label = strip_tags( $heading['heading_contents'] );
 
                 if( empty( $heading_label ) ) {
                     continue;

@@ -2,8 +2,8 @@
 Contributors: shapedplugin, khalilu, shamimmiashuhagh, rubel_miah
 Tags: wordpress carousel, best carousel plugin, image carousel, image slider, post carousel, custom post carousel, custom taxonomy carousel, woocommerce product carousel, content carousel, video carousel, video slider, video lightbox, youtube carousel, video gallery, carousel, slider, responsive slider, responsive carousel, carousel slider, ticker carousel, center mode carousel, slide anything, image gallery, image lightbox, wordpress image gallery, photo gallery, gallery slider, wordpress gallery plugin, gallery, post slider, vimeo slider, self hosted video carousel, content slider, wordpress slider, featured content slider, html slider, horizontal carousel slider, posts content slider, product carousel, woocommerce slider, woocommerce product slider
 Requires at least: 5.0
-Tested up to: 6.3.2
-Stable tag: 2.5.9
+Tested up to: 6.4.1
+Stable tag: 2.5.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -326,6 +326,12 @@ Thank you!
 
 == Changelog ==
 
+= 2.5.10 – Nov 09, 2023 =
+* New: To add anything before and after the rating star, two hooks, 'wpcp_before_product_rating_woocommerce,' and 'wpcp_after_product_rating_woocommerce.'
+* Fix: The image counter in the lightbox displays incorrect numbers when using the lightbox with the image carousel.
+* Tested: WordPress 6.4.1 compatibility.
+* Tested: WooCommerce 8.2.2 compatibility.
+
 = 2.5.9 – Oct 19, 2023 =
 * New: The Quick View option to show the Quick View button in the product slider/grid.
 * New: The Show Brands option to show the brand's name in the product slider/grid.
@@ -345,7 +351,7 @@ Thank you!
 * New: The Lightbox feature for the image type.
 
 = 2.5.6 – May 30, 2023 =
-* Improved: The import feature with animation. 
+* Improved: The import feature with animation.
 * Fix: The warning if the space-between value is set to empty.
 * Tested: WordPress 6.2.2 compatibility.
 

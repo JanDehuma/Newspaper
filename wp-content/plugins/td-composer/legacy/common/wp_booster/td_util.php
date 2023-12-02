@@ -886,8 +886,20 @@ class td_util {
 	        // read the per post single_template
 	        $post_meta_values = td_util::get_post_meta_array( $post->ID, 'td_post_theme_settings' );
 
-            // we have a CPT
-            if ( 'post' !== $post->post_type ) {
+	        // check if the current post/CPT has a specific template set
+	        if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
+
+		        $td_site_post_template = $post_meta_values[ 'td_post_template' ];
+
+		        if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
+			        $template_id = td_global::tdb_get_template_id( $td_site_post_template );
+		        }
+
+            // we don't, so check next what type of post we are dealing with;
+	        } else if ( 'post' !== $post->post_type ) {
+
+                // we have a CPT
+
                 $lang = '';
                 if ( class_exists('SitePress', false ) ) {
                     global $sitepress;
@@ -903,23 +915,15 @@ class td_util {
                 $td_cpt = td_util::get_option('td_cpt');
                 $option_id = 'td_default_site_post_template' . $lang;
 
-	            $default_template_id = !empty( $td_cpt[$post->post_type][$option_id] ) ? $td_cpt[$post->post_type][$option_id] : '';
+                $default_template_id = !empty( $td_cpt[$post->post_type][$option_id] ) ? $td_cpt[$post->post_type][$option_id] : '';
 
                 if ( td_global::is_tdb_template( $default_template_id, true ) ) {
                     $template_id = td_global::tdb_get_template_id( $default_template_id );
                 }
 
-            }
-	        // if we don't have any single_template set on this post, try to load the default global setting
-	        else if ( ! empty( $post_meta_values[ 'td_post_template' ] ) ) {
+            } else {
 
-		        $td_site_post_template = $post_meta_values[ 'td_post_template' ];
-
-		        if ( td_global::is_tdb_template( $td_site_post_template, true ) ) {
-			        $template_id = td_global::tdb_get_template_id( $td_site_post_template );
-		        }
-
-	        } else {
+                // we have a regular post
 
 		        $td_primary_category = td_global::get_primary_category_id();
 
@@ -2251,22 +2255,44 @@ class td_util {
      * @param $color_two - string - returned color (ex. #fff)
      * @return string - color one or two
      */
-    static function readable_colour($bg, $contrast_limit, $color_one, $color_two){
-        $r = hexdec(substr($bg,1,2));
-        $g = hexdec(substr($bg,3,2));
-        $b = hexdec(substr($bg,5,2));
+    static function readable_colour( $bg, $contrast_limit, $color_one, $color_two ) {
+
+        $r = $g = $b = $a = 0;
+
+        if( preg_match( "/^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i", $bg, $matches ) ) {
+            // #RRGGBBAA or #RRGGBB.
+            $r = hexdec( $matches[1] );
+            $g = hexdec( $matches[2] );
+            $b = hexdec( $matches[3] );
+            $a = isset( $matches[4] ) ? hexdec( $matches[4] ) / 255 : 1;
+        } elseif( preg_match( "/^#([a-f0-9]{1})([a-f0-9]{1})([a-f0-9]{1})$/i", $bg, $matches ) ) {
+            // #RGB.
+            $r = hexdec( $matches[1] . $matches[1] );
+            $g = hexdec( $matches[2] . $matches[2] );
+            $b = hexdec( $matches[3] . $matches[3] );
+        } elseif ( preg_match( "/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d\.]+))?\)$/i", $bg, $matches ) ) {
+            // rgba() or rgb().
+            $r = $matches[1];
+            $g = $matches[2];
+            $b = $matches[3];
+            $a = isset( $matches[4] ) ? $matches[4] : 1;
+        } else {
+            // Invalid color format.
+            return $bg;
+        }
 
         $contrast = sqrt(
-            $r * $r * .241 +
-            $g * $g * .691 +
-            $b * $b * .068
+            $r * $r * .241 * $a +
+            $g * $g * .691 * $a +
+            $b * $b * .068 * $a
         );
 
-        if($contrast > $contrast_limit){
+        if( $contrast > $contrast_limit ) {
             return $color_one;
-        }else{
+        } else {
             return $color_two;
         }
+
     }
 
 
@@ -4830,6 +4856,120 @@ class td_util {
         }
 
         return array_key_first( $array );
+
+    }
+
+    /*
+     * This function will encrypt a string using PHP
+     *
+     * @param   $data (string)
+     * @return  (string)
+     *
+     */
+    static function php_openssl_encrypt( $data = '' ) {
+
+        // bail early if no encrypt function
+        if ( !function_exists( 'openssl_encrypt' ) ) {
+            return base64_encode( $data );
+        }
+
+        // generate a key
+        $key = wp_hash( 'td_encrypt' );
+
+        // Generate an initialization vector
+        $iv = openssl_random_pseudo_bytes( openssl_cipher_iv_length( 'aes-256-cbc' ) );
+
+        // Encrypt the data using AES 256 encryption in CBC mode using our encryption key and initialization vector.
+        $encrypted_data = openssl_encrypt( $data, 'aes-256-cbc', $key, 0, $iv );
+
+        // The $iv is just as important as the key for decrypting, so save it with our encrypted data using a unique separator (::)
+        return base64_encode( $encrypted_data . '::' . $iv );
+
+    }
+
+
+    /*
+     * This function will decrypt an encrypted string using PHP
+     *
+     * @param   $data (string)
+     * @return  (string)
+     *
+     */
+    static function php_openssl_decrypt( $data = '' ) {
+
+        // bail early if no decrypt function
+        if ( !function_exists( 'openssl_decrypt' ) ) {
+            return base64_decode( $data );
+        }
+
+        // generate a key
+        $key = wp_hash( 'td_encrypt' );
+
+        // To decrypt, split the encrypted data from our IV - our unique separator used was "::"
+        list($encrypted_data, $iv) = explode( '::', base64_decode( $data ), 2 );
+
+        // decrypt
+        return openssl_decrypt( $encrypted_data, 'aes-256-cbc', $key, 0, $iv );
+
+    }
+
+    /**
+     * Returns if the encryption libraries are loaded and the encrypt method exists.
+     *
+     * @return bool
+     */
+    public static function is_encryption_eligible() {
+        return extension_loaded( 'openssl' ) && function_exists( 'openssl_encrypt' );
+    }
+
+
+
+    static function verify_captcha( $token  ) {
+
+        // get google secret key from panel
+        $captcha_secret_key = td_util::get_option('tds_captcha_secret_key' );
+        $captcha_domain = td_util::get_option('tds_captcha_url') !== '' ? 'www.recaptcha.net' : 'www.google.com';
+
+        // alter captcha result=>score
+        $captcha_score = td_util::get_option('tds_captcha_score' );
+        if ( $captcha_score == '' ) {
+            $captcha_score = 0.5;
+        }
+
+        // for cloudflare
+        if ( isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
+            $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        }
+        $captcha_postdata = http_build_query( array(
+                'secret' => $captcha_secret_key,
+                'response' => $token,
+                'remoteip' => $_SERVER['REMOTE_ADDR']
+            )
+        );
+        $captcha_opts = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $captcha_postdata
+            )
+        );
+        $captcha_context = stream_context_create( $captcha_opts );
+        $captcha_response = file_get_contents('https://' . $captcha_domain . '/recaptcha/api/siteverify', false, $captcha_context);
+        $captcha_response = json_decode($captcha_response);
+        //var_dump( $captcha_response );
+
+        // check also captcha score result - default is 0.5
+        if ( $captcha_response->success && $captcha_response->score >= $captcha_score ) {
+            $data['success'] = true;
+        } elseif ( $captcha_response->success && $captcha_response->score < $captcha_score ) {
+            $data['success'] = false;
+            $data['error'] = 'score failed';
+        }
+        else {
+            $data['success'] = false;
+        }
+
+        return $data;
 
     }
 

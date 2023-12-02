@@ -115,7 +115,7 @@ class td_resources_optimize {
         //$html = str_replace("\t", '', $html);
 
         /* -- Search for inline style elements. -- */
-        preg_match_all( '#(?<opening_tag><style.*>)(?<tag_contents>.*)(?<closing_tag></style>)#Usmi', $html, $inline_css_matches );
+        preg_match_all('#(?<opening_tag><style[^>]*>)(?<tag_contents>.*?)(?<closing_tag><\/style>|<\\\/style>)#si', $html, $inline_css_matches);
 
         // Bail if no results.
         if( !$inline_css_matches ) {
@@ -148,7 +148,6 @@ class td_resources_optimize {
             $tag_contents_original = $inline_css_matches['tag_contents'][$i];
 
 
-
             // Check if the inline style element contains one
             // of the required string set above.
             if( !$this->string_contains( $tag_contents_original, $inline_css_contains ) ) {
@@ -162,7 +161,6 @@ class td_resources_optimize {
 
             // Store the inline css
             $this->inline_css[] = $tag_contents_processed;
-
 
 
             // Replace the original style element's content, or completely
@@ -182,7 +180,7 @@ class td_resources_optimize {
             $separator = !$this->minify_css ? PHP_EOL : '';
             $insert_inline_css = implode($separator, $this->inline_css);
 
-            $html = $this->insert_in_html( '<style id="td-inline-css-aggegated">' . $insert_inline_css . '</style>', array( '</head>', 'before' ), $html );
+            $html = $this->insert_in_html( '<style id="td-inline-css-aggregated">' . $insert_inline_css . '</style>', array( '</head>', 'before' ), $html );
 
         }
 

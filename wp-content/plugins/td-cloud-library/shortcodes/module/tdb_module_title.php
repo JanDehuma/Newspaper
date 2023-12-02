@@ -26,6 +26,7 @@ class tdb_module_title extends tdb_module_template_part {
 				line-height: 1.2;
 			}
 			.tdb_module_title a {
+			    transform: translateZ(0);
 				transition: box-shadow 0.2s ease;
 				-webkit-transition: box-shadow 0.2s ease;
 			}
@@ -315,14 +316,13 @@ class tdb_module_title extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<' . $title_tag . '  class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= '<a href="' . $post_link . '" title="' . $post_title_attribute . '"' . $link_target . '>';
 
 				$buffy .= $excl_label;

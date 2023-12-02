@@ -18,7 +18,7 @@ class td_menu {
             add_filter('wp_edit_nav_menu_walker', array($this, 'hook_wp_edit_nav_menu_walker'));
         });
 
-        add_filter('wp_nav_menu_objects', array($this, 'hook_wp_nav_menu_objects'),  10, 2);
+        add_filter('wp_nav_menu_objects', array($this, 'hook_wp_nav_menu_objects'),  99999, 2);
     }
 
 

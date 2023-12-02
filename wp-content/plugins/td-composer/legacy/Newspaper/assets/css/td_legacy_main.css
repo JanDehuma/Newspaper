@@ -101,6 +101,11 @@ usage:
   height: 32px;
   background-position: -20px -781px;
 }
+.td-sp-steam {
+  width: 32px;
+  height: 32px;
+  background-position: -20px -843px;
+}
 .tdc-header-template .td-main-page-wrap,
 .tdc-no-header .td-main-page-wrap {
   padding-top: 0;

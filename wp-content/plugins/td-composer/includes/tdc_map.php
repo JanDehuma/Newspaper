@@ -108,6 +108,7 @@ $external_shortcodes = array(
             'soundcloud',
             'rss',
             'rss_url',
+            'steam',
             'el_class'
         ),
         "params" => array_merge(
@@ -334,6 +335,24 @@ $external_shortcodes = array(
                     "value" => '',
                     "heading" => __("Twitch fixed count", TD_THEME_NAME),
                     "description" => "Add a fixed followers count for Twitch.",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-big"
+                ),
+                array(
+                    "param_name" => "steam",
+                    "type" => "textfield",
+                    "value" => "",
+                    "heading" => __("Steam link", TD_THEME_NAME)/* . '&nbsp<a href="http://forum.tagdiv.com/tagdiv-social-counter-tutorial/" target="_blank">How to get the App Id and the Security Key</a>'*/,
+                    "description" => "",
+                    "holder" => "div",
+                    "class" => "tdc-textfield-big"
+                ),
+                array(
+                    "param_name" => "manual_count_steam",
+                    "type" => "textfield",
+                    "value" => '',
+                    "heading" => __("Steam fixed count", TD_THEME_NAME),
+                    "description" => "Add a fixed count for Steam.",
                     "holder" => "div",
                     "class" => "tdc-textfield-big"
                 ),

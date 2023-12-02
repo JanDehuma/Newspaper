@@ -144,6 +144,12 @@ $page_page_account_account_details_real_estate_pro_id = td_demo_content::add_pag
 	'demo_unique_id' => '24632d4c7f19918',
 ));
 
+$page_add_property_id = td_demo_content::add_page( array(
+    'title' => 'Add property',
+    'file' => 'add_property.txt',
+    'demo_unique_id' => '34632d4c7f1aee6',
+));
+
 $page_page_account_properties_list_real_estate_pro_id = td_demo_content::add_page( array(
 	'title' => 'Page account - Properties list - Real Estate PRO',
 	'file' => 'page_account_properties_list_real_estate_pro.txt',
@@ -243,12 +249,6 @@ $template_module_template_2_real_estate_pro_id = td_demo_content::add_cloud_temp
 /*  ---------------------------------------------------------------------------- 
 	PAGES
 */
-$page_add_property_id = td_demo_content::add_page( array(
-	'title' => 'Add property',
-	'file' => 'add_property.txt',
-	'demo_unique_id' => '34632d4c7f1aee6',
-));
-
 $page_properties_id = td_demo_content::add_page( array(
 	'title' => 'Properties',
 	'file' => 'properties_new.txt',

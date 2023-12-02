@@ -22,6 +22,7 @@ class tdb_module_read_more extends tdb_module_template_part {
 				margin: 0;
 			}
 			.tdb_module_read_more a {
+			    transform: translateZ(0);
 				background-color: var(--td_theme_color, #4db2ec);
 				padding: 10px 15px;
 				font-size: 13px;
@@ -327,14 +328,14 @@ class tdb_module_read_more extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
 
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= '<a href="' . $post_link . '"' . $link_target . ' title="' . $btn_txt . '">';
 				if( $icon_position == 'before' ) {
 					$buffy .= $icon_html;

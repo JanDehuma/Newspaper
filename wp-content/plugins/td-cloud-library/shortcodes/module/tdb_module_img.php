@@ -25,6 +25,9 @@ class tdb_module_img extends tdb_module_template_part {
 				position: relative;
 				margin: 0;
 			}
+			.tdb_module_img .entry-thumb {
+			    z-index: -1;
+			}
 			.tdb_module_img img {
 				display: block;
 				width: 100%;
@@ -60,6 +63,7 @@ class tdb_module_img extends tdb_module_template_part {
 			.$style_selector,
 			html:not([class*='ie']) .$style_selector:before,
 			html:not([class*='ie']) .$style_selector:after,
+			.$style_selector .td-element-style,
 			.$style_selector img {
 				border-radius: @tdb_mts_radius_$style_atts_uid;
 			}
@@ -727,12 +731,6 @@ class tdb_module_img extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
 
 		$buffy .= '<a 
 						href="' . $post_link . '" 
@@ -744,6 +742,12 @@ class tdb_module_img extends tdb_module_template_part {
 						' . $video_popup_data . 
 						$link_target . 
 					'>';
+
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
 
 			if ( empty( $tds_animation_stack ) && !wp_doing_ajax() && ! td_util::tdc_is_live_editor_ajax() && ! td_util::tdc_is_live_editor_iframe() ) {
 				$retina_image = '';

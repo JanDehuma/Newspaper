@@ -4,7 +4,7 @@ class tdb_gallery extends td_block {
     private $slider_options = array(
         'infinite' => false,
         'autoplay' => false,
-        'autoplaSpeed' => 3000,
+        'autoplaySpeed' => 3000,
         'swipe' => false,
         'arrows' => false,
         'prevArrow' => '<button type="button" class="slick-prev"><i class="td-icon-left-arrow"></i></button>',
@@ -174,6 +174,15 @@ class tdb_gallery extends td_block {
                     display: block;
                     overflow: hidden;
                 }
+                .tdb_gallery .tdb-gi-inner:after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none; 
+                }
                 .tdb_gallery img {
                     position: absolute;
                     width: 100%;
@@ -277,6 +286,12 @@ class tdb_gallery extends td_block {
                     padding-left: @" . $style_atts_prefix . "gap$style_atts_uid;
                     padding-right: @" . $style_atts_prefix . "gap$style_atts_uid;
                 }
+                
+                
+                /* @" . $style_atts_prefix . "focus_on_select$style_atts_uid */
+                body .$style_selector .tdb-gi-inner {
+                    cursor: pointer;
+                }
 
 
                 /* @" . $style_atts_prefix . "height$style_atts_uid */
@@ -288,12 +303,22 @@ class tdb_gallery extends td_block {
                     height: @" . $style_atts_prefix . "list_height$style_atts_uid;
                 }
                 /* @" . $style_atts_prefix . "all_border$style_atts_uid */
-                body .$style_selector .tdb-gi-inner {
+                body .$style_selector .tdb-gi-inner:after {
                     border: @" . $style_atts_prefix . "all_border$style_atts_uid @" . $style_atts_prefix . "all_border_style$style_atts_uid @" . $style_atts_prefix . "all_border_color$style_atts_uid;
                 }
                 /* @" . $style_atts_prefix . "border_radius$style_atts_uid */
-                body .$style_selector .tdb-gi-inner {
+                body .$style_selector .tdb-gi-inner,
+                body .$style_selector .tdb-gi-inner:after {
                     border-radius: @" . $style_atts_prefix . "border_radius$style_atts_uid;
+                }
+                /* @" . $style_atts_prefix . "all_border_a$style_atts_uid */
+                body .$style_selector .slick-current .tdb-gi-inner:after {
+                    border: @" . $style_atts_prefix . "all_border_a$style_atts_uid @" . $style_atts_prefix . "all_border_a_style$style_atts_uid @" . $style_atts_prefix . "all_border_a_color$style_atts_uid;
+                }
+                /* @" . $style_atts_prefix . "border_radius_a$style_atts_uid */
+                body .$style_selector .slick-current .tdb-gi-inner,
+                body .$style_selector .slick-current .tdb-gi-inner:after {
+                    border-radius: @" . $style_atts_prefix . "border_radius_a$style_atts_uid;
                 }
                 /* @" . $style_atts_prefix . "show_caption$style_atts_uid */
                 body .$style_selector .tdb-gi-caption {
@@ -336,16 +361,20 @@ class tdb_gallery extends td_block {
                 /* @" . $style_atts_prefix . "arrows_pos_inside$style_atts_uid */
                 body .$style_selector .slick-prev {
                     left: 13px;
+                    right: auto;
                 }
                 body .$style_selector .slick-next {
+                    left: auto;
                     right: 13px;
                 }
                 /* @" . $style_atts_prefix . "arrows_pos_outside$style_atts_uid */
                 body .$style_selector .slick-prev {
+                    left: auto;
                     right: calc(100% + 13px);
                 }
                 body .$style_selector .slick-next {
                     left: calc(100% + 13px);
+                    right: auto;
                 }
                 /* @" . $style_atts_prefix . "arrows_space_inside$style_atts_uid */
                 body .$style_selector .slick-prev {
@@ -414,6 +443,10 @@ class tdb_gallery extends td_block {
                 body .$style_selector .slick-dots button:hover:after,
                 body .$style_selector .slick-dots .slick-active button:after {
                     background-color: @" . $style_atts_prefix . "dots_color_h$style_atts_uid;
+                }
+                /* @" . $style_atts_prefix . "dots_color_a$style_atts_uid */
+                body .$style_selector .slick-dots .slick-active button:after {
+                    background-color: @" . $style_atts_prefix . "dots_color_a$style_atts_uid;
                 }
                 /* @" . $style_atts_prefix . "dots_shadow$style_atts_uid */
                 body .$style_selector .slick-dots button:after {
@@ -486,6 +519,31 @@ class tdb_gallery extends td_block {
         $border_radius .= is_numeric( $border_radius ) ? 'px' : '';
         $res_ctx->load_settings_raw( $style_atts_prefix . 'border_radius' . $style_atts_uid, $border_radius );
 
+        if( $res_ctx->get_shortcode_att( 'active_highlight' ) == 'yes' ) {
+            // Border size
+            $all_border_a = $res_ctx->get_shortcode_att( 'all_border_a' );
+            $all_border_a .= is_numeric( $all_border_a ) ? 'px' : '';
+            if( ( $all_border_a == '' || $all_border_a == 'inherit' ) && $all_border != '' ) {
+                $all_border_a = $all_border;
+            }
+            $res_ctx->load_settings_raw( $style_atts_prefix . 'all_border_a' . $style_atts_uid, $all_border_a );
+
+            // Border style
+            $all_border_a_style = $res_ctx->get_shortcode_att( 'all_border_a_style' );
+            if( ( $all_border_a_style == '' || $all_border_a_style == 'inherit' ) && $all_border_style != '' ) {
+                $all_border_a_style = $all_border_style;
+            }
+            $res_ctx->load_settings_raw( $style_atts_prefix . 'all_border_a_style' . $style_atts_uid, $all_border_a_style );
+
+            // Border radius
+            $border_radius_a = $res_ctx->get_shortcode_att( 'border_radius_a' );
+            $border_radius_a .= is_numeric( $border_radius_a ) ? 'px' : '';
+            if( ( $border_radius_a == '' || $border_radius_a == 'inherit' ) && $border_radius != '' ) {
+                $border_radius_a = $border_radius;
+            }
+            $res_ctx->load_settings_raw( $style_atts_prefix . 'border_radius_a' . $style_atts_uid, $border_radius_a );
+        }
+
         // Show caption
         $show_caption = $res_ctx->get_shortcode_att( 'show_caption' );
         $show_caption = $show_caption != '' ? $show_caption : 'block';
@@ -511,6 +569,11 @@ class tdb_gallery extends td_block {
         $all_border_color = $res_ctx->get_shortcode_att( 'all_border_color' );
         $all_border_color = $all_border_color != '' ? $all_border_color : '#000';
         $res_ctx->load_settings_raw( $style_atts_prefix . 'all_border_color' . $style_atts_uid, $all_border_color );
+        if( $res_ctx->get_shortcode_att( 'active_highlight' ) == 'yes' ) {
+            $all_border_a_color = $res_ctx->get_shortcode_att( 'all_border_a_color' );
+            $all_border_a_color = $all_border_a_color != '' ? $all_border_a_color : ( $all_border_color != '' ? $all_border_color : '#000' );
+            $res_ctx->load_settings_raw( $style_atts_prefix . 'all_border_a_color' . $style_atts_uid, $all_border_a_color );
+        }
 
         $res_ctx->load_settings_raw( $style_atts_prefix . 'caption_bg' . $style_atts_uid, $res_ctx->get_shortcode_att( 'caption_bg' ) );
         $res_ctx->load_settings_raw( $style_atts_prefix . 'caption_color' . $style_atts_uid, $res_ctx->get_shortcode_att( 'caption_color' ) );
@@ -561,6 +624,7 @@ class tdb_gallery extends td_block {
         /* -- Dots style -- */
         $res_ctx->load_settings_raw( $style_atts_prefix . 'dots_color' . $style_atts_uid, $res_ctx->get_shortcode_att( 'dots_color' ) );
         $res_ctx->load_settings_raw( $style_atts_prefix . 'dots_color_h' . $style_atts_uid, $res_ctx->get_shortcode_att( 'dots_color_h' ) );
+        $res_ctx->load_settings_raw( $style_atts_prefix . 'dots_color_a' . $style_atts_uid, $res_ctx->get_shortcode_att( 'dots_color_a' ) );
         $res_ctx->load_shadow_settings( 3, 0, 0, 0, 'rgba(0, 0, 0, 0.3)', 'dots_shadow', '', true , $style_atts_prefix, $style_atts_uid );
 
     }
@@ -591,6 +655,8 @@ class tdb_gallery extends td_block {
 
         // Modal images
         $modal_images = $this->get_att('modal_imgs') != '';
+        $modal_images_size = $this->get_att('modal_imgs_size');
+        $modal_images_size = $modal_images_size != '' ? $modal_images_size : 'td_1920x0';
 
 
 
@@ -598,15 +664,24 @@ class tdb_gallery extends td_block {
         /* --
         -- Slider options
         -- */
-        /* -- Autoplay -- */
+        /* -- As nav for -- */
+        $nav_for = $this->get_att('nav_for');
+        if( $nav_for != '' ) {
+            $this->slider_options['asNavFor'] = '.' . $nav_for . ' .tdb-gallery-wrap';
+        }
+
+
+        /* -- Infinite -- */
         // Enable
         $this->slider_options['infinite'] = $this->get_att('infinite') != '';
 
+
+        /* -- Autoplay -- */
         // Enable
         $this->slider_options['autoplay'] = $this->get_att('autoplay') != '';
         
         // Autoplay speed
-        $this->slider_options['autoplaSpeed'] = $this->get_att('autoplay_speed') != '' && is_numeric( $this->get_att('autoplay_speed') ) ? intval($this->get_att('autoplay_speed')) : 3000;
+        $this->slider_options['autoplaySpeed'] = $this->get_att('autoplay_speed') != '' && is_numeric( $this->get_att('autoplay_speed') ) ? intval($this->get_att('autoplay_speed')) : 3000;
 
         
         /* -- Navigation -- */
@@ -742,6 +817,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 1',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     ),
                     array(
@@ -749,6 +825,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 2',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     ),
                     array(
@@ -756,6 +833,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 3',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     ),
                     array(
@@ -763,6 +841,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 4',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     ),
                     array(
@@ -770,6 +849,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 5',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     ),
                     array(
@@ -777,6 +857,7 @@ class tdb_gallery extends td_block {
                         'alt' => '',
                         'title' => 'Sample gallery image 6',
                         'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                        'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'caption' => 'Sample caption'
                     )
                 );
@@ -862,6 +943,22 @@ class tdb_gallery extends td_block {
                                     $image_info = td_util::attachment_get_full_info( $gallery_image_id, $images_size );
 
                                     $gallery_image['url'] = $image_info['src'];
+                                }
+
+                                // Get the modal image URL
+                                if( td_util::get_option('tds_thumb_' . $modal_images_size ) != 'yes' ) {
+                                    // The thumb size is disabled, so show a placeholder thumb
+                                    $thumb_disabled_path = td_global::$get_template_directory_uri;
+                                    if ( strpos( $images_size, 'td_' ) === 0 ) {
+                                        $thumb_disabled_path = td_api_thumb::get_key( $images_size, 'no_image_path' );
+                                    }
+
+                                    $gallery_image['url_modal'] = $thumb_disabled_path . '/images/thumb-disabled/' . $modal_images_size . '.png';
+                                } else {
+                                    // The thumbnail size is enabled in the panel, try to get the image
+                                    $image_info = td_util::attachment_get_full_info( $gallery_image_id, $modal_images_size );
+
+                                    $gallery_image['url_modal'] = $image_info['src'];
                                 }
 
                                 $gallery_images[] = $gallery_image;
@@ -998,16 +1095,16 @@ class tdb_gallery extends td_block {
                     $buffy .= '<div class="tdb-gallery-wrap">';
                         foreach( $gallery_images as $gallery_image ) {
                             $buffy .= '<div class="tdb-gallery-image">';
-                                $buffy .= '<' . ( $modal_images ? 'a href="' . $gallery_image['url'] . '"' : 'div' ) . ' class="tdb-gi-inner">';
-                                    $buffy .= '<img src="' . $gallery_image['url'] . '"' .
-                                                    ( !empty( $gallery_image['alt'] ) ? ' alt="' . $gallery_image['alt'] . '"' : '' ) .
-                                                    ( !empty( $gallery_image['title'] ) ? ' title="' . $gallery_image['title'] . '"' : '' ) .
-                                                    ( $modal_images ? ' class="td-modal-image"' : '' ) .
-                                                ' />';
+                                $buffy .= '<' . ( $modal_images ? 'a href="' . $gallery_image['url_modal'] . '"' : 'div' ) . ' class="tdb-gi-inner" ' . ( $modal_images && !empty( $gallery_image['caption'] ) ? 'data-caption="' . $gallery_image['caption'] . '"' : '' ) . '>';
+                                $buffy .= '<img src="' . $gallery_image['url'] . '"' .
+                                    ( !empty( $gallery_image['alt'] ) ? ' alt="' . $gallery_image['alt'] . '"' : '' ) .
+                                    ( !empty( $gallery_image['title'] ) ? ' title="' . $gallery_image['title'] . '"' : '' ) .
+                                    ( $modal_images ? ' class="td-modal-image"' : '' ) .
+                                ' />';
 
-                                    if( !empty( $gallery_image['caption'] ) ) {
-                                        $buffy .= '<span class="tdb-gi-caption">' . $gallery_image['caption'] . '</span>';
-                                    }
+                                if( !empty( $gallery_image['caption'] ) ) {
+                                    $buffy .= '<figcaption class="tdb-gi-caption">' . $gallery_image['caption'] . '</figcaption>';
+                                }
                                 $buffy .= '</' . ( $modal_images ? 'a' : 'div' ) . '>';
                             $buffy .= '</div>';
                         }

@@ -1821,6 +1821,11 @@ class tdb_header_mega_menu extends td_block {
     function get_mega_menu_subcategories($atts) {
 
         $mm_child_cats_limit = $this->get_att('child_cats_limit');
+        // Bail if limit is set to 0.
+        if( $mm_child_cats_limit == 0 ) {
+            return false;
+        }
+
         $mm_category_id      = $this->get_att('category_id');
         $mm_hide_all         = $this->get_att('hide_all');
         $mm_elem_order       = $this->get_att('mm_elem_order');

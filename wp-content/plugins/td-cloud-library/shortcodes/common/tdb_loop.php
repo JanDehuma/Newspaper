@@ -512,6 +512,7 @@ class tdb_loop extends td_block {
         $res_ctx->load_settings_raw( 'ex_txt', $res_ctx->get_shortcode_att('ex_txt') );
         $res_ctx->load_settings_raw( 'com_bg', $res_ctx->get_shortcode_att('com_bg') );
         $res_ctx->load_settings_raw( 'com_txt', $res_ctx->get_shortcode_att('com_txt') );
+        $res_ctx->load_settings_raw( 'rev_txt', $res_ctx->get_shortcode_att('rev_txt') );
         $res_ctx->load_settings_raw( 'audio_btn_color', $res_ctx->get_shortcode_att( 'audio_btn_color' ) );
         $res_ctx->load_settings_raw( 'audio_time_color', $res_ctx->get_shortcode_att( 'audio_time_color' ) );
         $res_ctx->load_settings_raw( 'audio_bar_color', $res_ctx->get_shortcode_att( 'audio_bar_color' ) );
@@ -1236,6 +1237,10 @@ class tdb_loop extends td_block {
 				/* @com_txt */
 				.$unique_block_class .td-module-comments a {
 					color: @com_txt;
+				}
+				/* @rev_txt */
+				.$unique_block_class .entry-review-stars {
+					color: @rev_txt;
 				}
 				/* @audio_btn_color */
                 .$unique_block_class .td-audio-player .mejs-button button:after {

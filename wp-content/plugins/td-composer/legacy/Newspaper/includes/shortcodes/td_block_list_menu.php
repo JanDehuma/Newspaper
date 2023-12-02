@@ -383,8 +383,6 @@ class td_block_list_menu extends td_block {
 
 		parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
-
-
 		/* -- Block atts -- */
 		// Menu ID
 		$menu_id = $this->get_att( 'menu_id' );
@@ -396,10 +394,47 @@ class td_block_list_menu extends td_block {
 		// Depth
 		$depth = $this->get_att( 'depth' );
 
+        td_global::set_in_menu(true);
+        $state_menu = false;
+        global $tdb_state_single, $tdb_state_category, $tdb_state_tag, $tdb_state_single_page, $td_woo_state_archive_product_page, $td_woo_state_single_product_page, $td_woo_state_shop_base_page;
+
+        if ( defined( 'TD_CLOUD_LIBRARY' ) ) {
+
+            switch (tdb_state_template::get_template_type()) {
+                case 'cpt':
+                case 'single':
+                    $state_menu = $tdb_state_single->list_menu->__invoke($this->get_all_atts());
+                    break;
+
+                case 'category':
+                case 'cpt_tax':
+                    $state_menu = $tdb_state_category->list_menu->__invoke($this->get_all_atts());
+                    break;
+
+                case 'tag':
+                    $state_menu = $tdb_state_tag->list_menu->__invoke( $this->get_all_atts() );
+                    break;
+
+                case 'page':
+                    $state_menu = $tdb_state_single_page->list_menu->__invoke($this->get_all_atts());
+                    break;
+
+                case 'woo_archive':
+                    $state_menu = $td_woo_state_archive_product_page->list_menu->__invoke($this->get_all_atts());
+                    break;
+
+                case 'woo_product':
+                    $state_menu = $td_woo_state_single_product_page->list_menu->__invoke($this->get_all_atts());
+                    break;
+
+                case 'woo_shop_base':
+                    $state_menu = $td_woo_state_shop_base_page->list_menu->__invoke($this->get_all_atts());
+                    break;
+            }
+        }
+
 		// Additional classes
 		$additional_classes_array = array('td-blm-display-' . self::$menu_display);
-
-
 
 		$buffy = ''; //output buffer
 
@@ -419,6 +454,8 @@ class td_block_list_menu extends td_block {
 					$buffy .= '</div>';
 
 				$buffy .= '</div>';
+
+                td_global::set_in_menu( false );
 
 				return $buffy;
 			}
@@ -441,16 +478,22 @@ class td_block_list_menu extends td_block {
 
 			$buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-fix-index">';
 
-				ob_start();
-				$td_menu_instance = td_menu::get_instance();
-				remove_filter( 'wp_nav_menu_objects', array($td_menu_instance, 'hook_wp_nav_menu_objects') );
+                // if the menu was built and comes from a state and we just need to add it to the buffer
+                if ( ! empty( $state_menu ) ) {
+                    $buffy .= $state_menu;
 
-				wp_nav_menu( $menu_atts );
+                } else { // otherwise, we use the menu id and call the wp_nav_menu @see $this->inner()
+                    ob_start();
+                    $td_menu_instance = td_menu::get_instance();
+                    remove_filter( 'wp_nav_menu_objects', array($td_menu_instance, 'hook_wp_nav_menu_objects') );
 
-				add_filter( 'wp_nav_menu_objects', array($td_menu_instance, 'hook_wp_nav_menu_objects'),  10, 2 );
-				$buffy .= ob_get_clean();
+                    wp_nav_menu( $menu_atts );
 
-			$buffy .= '</div>';
+                    add_filter( 'wp_nav_menu_objects', array($td_menu_instance, 'hook_wp_nav_menu_objects'),  99999, 2 );
+                    $buffy .= ob_get_clean();
+                }
+
+                $buffy .= '</div>';
 
 
 			if( self::$menu_display == 'accordion' && !( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) ) {
@@ -480,6 +523,7 @@ class td_block_list_menu extends td_block {
 
 		$buffy .= '</div>';
 
+        td_global::set_in_menu( false );
 
 		return $buffy;
 
@@ -494,7 +538,7 @@ class td_block_list_menu_accordion extends Walker_Nav_Menu {
 	private static $menu_display;
 	private static $is_first_sub_menu;
 	private static $sub_menu_open = false;
-	
+
     public function __construct($atts = array())
     {
         self::$atts = $atts;
@@ -641,10 +685,10 @@ class td_block_list_menu_accordion extends Walker_Nav_Menu {
 			$menu_item_has_children &&
 			(
 				(
-					( in_array('current-menu-ancestor', $classes) || in_array('current-menu-item', $classes) ) && 
+					( in_array('current-menu-ancestor', $classes) || in_array('current-menu-item', $classes) ) &&
 					( isset( self::$atts['curr_submenu_open'] ) && self::$atts['curr_submenu_open'] == 'yes' )
 				) ||
-				( 
+				(
 					( td_util::tdc_is_live_editor_iframe() || td_util::tdc_is_live_editor_ajax() ) &&
 					self::$is_first_sub_menu
 				)

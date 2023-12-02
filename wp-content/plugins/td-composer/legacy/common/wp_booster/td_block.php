@@ -1653,9 +1653,10 @@ class td_block {
 		$cssOutput = '';
 		$beforeCssOutput = '';
 		$afterCssOutput = '';
+        $tdcHiddenLabelCssOutput = '';
 
         if ( !empty( $tdcCss ) ) {
-            $buffy .= $this->generate_css( $tdcCss, $clearfixColumns, $cssOutput, $beforeCssOutput, $afterCssOutput );
+            $buffy .= $this->generate_css( $tdcCss, $clearfixColumns, $cssOutput, $beforeCssOutput, $afterCssOutput, $tdcHiddenLabelCssOutput );
         }
 
         if ( !empty( $buffy ) ) {
@@ -1664,11 +1665,15 @@ class td_block {
         }
 
 		$tdcElementStyleCss = '';
-        if ( !empty($cssOutput) || !empty($beforeCssOutput) || !empty($afterCssOutput) ) {
+        if ( !empty($cssOutput) || !empty($beforeCssOutput) || !empty($afterCssOutput) || !empty($tdcHiddenLabelCssOutput) ) {
 			if ( !empty($beforeCssOutput) ) {
 				$beforeCssOutput = PHP_EOL . '<div class="td-element-style-before"><style>' . $beforeCssOutput . '</style></div>';
 			}
 			$tdcElementStyleCss = PHP_EOL . '<div class="' . $this->get_att( 'tdc_css_class_style' ) . ' td-element-style">' . $beforeCssOutput . '<style>' . $cssOutput . ' ' . $afterCssOutput . '</style></div>';
+
+            if( !empty( $tdcHiddenLabelCssOutput ) ) {
+                $tdcElementStyleCss .= PHP_EOL . '<div class="' . $this->get_att( 'tdc_css_class_style' ) . '_tdc_hidden_label tdc-hidden-elem-label"><style>' . $tdcHiddenLabelCssOutput . '</style></div>';
+            }
 		}
 
 		$has_style = false;
@@ -1834,10 +1839,11 @@ class td_block {
 	 * @param string $cssOutput - css output for td-element-style
 	 * @param string $beforeCssOutput - css output for td-element-style::before
 	 * @param string $afterCssOutput - css output for td-element-style::after
+	 * @param string  $tdcHiddenLabelCssOutput - css output for tdc hidden label
 	 *
 	 * @return string
 	 */
-	protected function generate_css( $tdcCss, &$clearfixColumns = false, &$cssOutput = '', &$beforeCssOutput = '', &$afterCssOutput = '' ) {
+	protected function generate_css( $tdcCss, &$clearfixColumns = false, &$cssOutput = '', &$beforeCssOutput = '', &$afterCssOutput = '', &$tdcHiddenLabelCssOutput = '' ) {
 
         $in_composer = tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax();
 
@@ -1862,7 +1868,30 @@ class td_block {
 		}
 
 
+        //
+        // Get information about the current shortcode
+        //
+        $shortcode_details = array();
 
+        $shortcode_key = get_class( $this );
+        switch( $shortcode_key ) {
+            case 'tdc_zone':
+            case 'vc_row':
+            case 'vc_row_inner':
+            case 'vc_column':
+            case 'vc_column_inner':
+            case 'vc_raw_html':
+            case 'vc_empty_space':
+            case 'vc_widget_sidebar':
+            case 'vc_separator':
+            case 'tdc_woo_shortcodes':
+                $shortcode_details = tdc_mapper::get_attributes( $shortcode_key );
+                break;
+
+            default:
+                $shortcode_details = td_api_base::get_by_id( $shortcode_key );
+                break;
+        }
 
 
 		$buffy = '';
@@ -1968,6 +1997,7 @@ class td_block {
 				$cssBeforeAll = '';
 				$cssElementStyleAll = '';
 				$cssAfterAll = array();
+				$tdcShowHiddenLabelAll = false;
 
                 $mediaCssAllInnerRow = '';
 
@@ -2106,6 +2136,14 @@ class td_block {
 
 						// Display settings
 						if ( 'display' === $k1 ) {
+                            if( 'none' === $v1 && $in_composer && td_util::get_option('tdcShowHiddenElements') == 'true' ) {
+                                $mediaCssDesktop .=
+                                    'opacity:.3;'  . PHP_EOL .
+                                    'filter: grayscale(1);' . PHP_EOL;
+                                $tdcShowHiddenLabelAll = true;
+                                continue;
+                            }
+
 							if ( 'show' !== $v1 && '' !== $v1 ) {
 								$mediaCssDesktop .= $k1 . ':' . $v1 . ' !important;' . PHP_EOL;
 							}
@@ -2230,6 +2268,22 @@ class td_block {
 						}
 					}
 
+                    if( $tdcShowHiddenLabelAll ) {
+
+                        $cssTDCHiddenLabelAfterAll = '';
+                        if( !empty( $shortcode_details ) ) {
+                            $cssTDCHiddenLabelAfterAll = PHP_EOL . '.' . $this->get_att( 'tdc_css_class_style' ) . '_tdc_hidden_label:after {' . PHP_EOL . 'content: "Hidden: ' . $shortcode_details['name'] . '"' . PHP_EOL . '}';
+                        }
+
+                        $limit_bottom = td_global::$td_viewport_intervals[ count( td_global::$td_viewport_intervals ) - 1 ]['limitBottom'];
+
+                        $tdcHiddenLabelCssOutput .= PHP_EOL . '/* desktop */' . PHP_EOL . '@media(min-width: ' . ( $limit_bottom + 1 ) . 'px) {' . PHP_EOL;
+                            $tdcHiddenLabelCssOutput .= '.' . $this->get_att( 'tdc_css_class_style' ) . '_tdc_hidden_label {' . PHP_EOL . 'display:block;' . PHP_EOL . '}';
+                            $tdcHiddenLabelCssOutput .= !empty( $cssTDCHiddenLabelAfterAll ) ? $cssTDCHiddenLabelAfterAll : '';
+                        $tdcHiddenLabelCssOutput .= PHP_EOL .'}' . PHP_EOL;
+
+                    }
+
 					if ($positionElement) {
 						$mediaCssAll .= 'position:relative;' . PHP_EOL;
 					}
@@ -2338,6 +2392,7 @@ class td_block {
 					$cssBefore = '';
 					$cssElementStyle = '';
 					$cssAfter = array();
+                    $tdcShowHiddenLabel = false;
 
 					$borderInLimit = false;
 					$backgroundInLimit = false;
@@ -2497,6 +2552,14 @@ class td_block {
 
 						// Display
 						if ( 'display' === $k2 ) {
+                            if( 'none' === $v2 && $in_composer && td_util::get_option('tdcShowHiddenElements') == 'true' ) {
+                                $mediaCss .=
+                                    'opacity:.3!important;'  . PHP_EOL .
+                                    'filter: grayscale(1)!important;' . PHP_EOL;
+                                $tdcShowHiddenLabel = true;
+                                continue;
+                            }
+
 							if ( 'show' !== $v2 && '' !== $v2 ) {
 								$mediaCss .= $k2 . ':' . $v2 . ' !important;' . PHP_EOL;
 							}
@@ -2606,7 +2669,7 @@ class td_block {
 
 
 
-					if ( $cssElementStyle !== '' || $cssBefore !== '' || $cssAfter !== '') {
+					if ( $cssElementStyle !== '' || $cssBefore !== '' || $cssAfter !== '' || $tdcShowHiddenLabel ) {
 
 						$mediaQuery = '';
 						if ( isset( $val['min_width'] ) ) {
@@ -2708,6 +2771,20 @@ class td_block {
 									$positionElement = true;
 								}
 							}
+
+                            if( !empty( $tdcShowHiddenLabel ) ) {
+
+                                $cssTDCHiddenLabelAfter = '';
+                                if( !empty( $shortcode_details ) ) {
+                                    $cssTDCHiddenLabelAfter = PHP_EOL . '.' . $this->get_att( 'tdc_css_class_style' ) . '_tdc_hidden_label:after {' . PHP_EOL . 'content: "Hidden: ' . $shortcode_details['name'] . '"' . PHP_EOL . '}';
+                                }
+
+                                $tdcHiddenLabelCssOutput .= PHP_EOL . '/* ' . $key . ' */' . PHP_EOL . '@media ' . $mediaQuery . PHP_EOL . '{' . PHP_EOL;
+                                    $tdcHiddenLabelCssOutput .= '.' . $this->get_att( 'tdc_css_class_style' ) . '_tdc_hidden_label {' . PHP_EOL . 'display:block;' . PHP_EOL . '}';
+                                    $tdcHiddenLabelCssOutput .= !empty( $cssTDCHiddenLabelAfter ) ? $cssTDCHiddenLabelAfter : '';
+                                $tdcHiddenLabelCssOutput .= PHP_EOL . '}' . PHP_EOL;
+
+                            }
 
 							if ($positionElement) {
 								$mediaCss .= 'position:relative;' . PHP_EOL;
@@ -3682,7 +3759,7 @@ class td_block {
      * gets the current template instance, if no instance it's found throws error
      * @return mixed the template instance
      */
-    private function block_template() {
+    protected function block_template() {
         if (isset($this->td_block_template_instance)) {
             return $this->td_block_template_instance;
         } else {
@@ -3739,6 +3816,19 @@ class td_block {
 
 		return $attr_value;
 	}
+
+
+    /**
+     * - Set the value of an attribute from the base class
+     * @param $att_name
+     * @param $value
+     * @return void
+     */
+    protected function set_att( $att_name, $value = '' ) {
+
+        $this->atts[$att_name] = $value;
+
+    }
 
 
 	/**

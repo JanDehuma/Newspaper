@@ -4,7 +4,7 @@
 	Plugin URI: https://tagdiv.com
 	Description: Create everything on your website right on the frontend with this drag and drop builder. Perfect for articles, pages, headers, and footers. No coding skills required.
 	Author: tagDiv
-	Version: 4.4 | built on 05.10.2023 12:50
+	Version: 4.5 | built on 09.11.2023 13:19
 	Author URI: https://tagdiv.com
 */
 
@@ -17,7 +17,7 @@ if ( is_plugin_active( 'td-multi-purpose/td-multi-purpose.php' ) ) {
 
 
 //hash
-define('TD_COMPOSER',       '2542f6ebea260f8fc5fdc19a93688182');
+define('TD_COMPOSER',       '3833ae26cf1f9d406448012ce1734aa1');
 define('TDC_VERSION',       '__td_aurora_deploy_version__');
 define('TDC_URL',           plugins_url('td-composer'));
 define('TDC_PATH',          dirname(__FILE__));

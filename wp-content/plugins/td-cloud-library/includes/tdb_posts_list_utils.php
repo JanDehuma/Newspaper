@@ -86,7 +86,6 @@ class tdb_posts_list_utils {
 		$extra_form_2_edit_txt = $options['extraForm2EditTxt'];
 
         /* -- Post childs forms --*/
-
         $child1_form_url = $options['child1FormURL'];
         $child1_form_edit_txt = $options['child1FormEditTxt'];
 
@@ -483,8 +482,10 @@ class tdb_posts_list_utils {
                         'featured_image' => TDB_URL . '/assets/images/td_meta_replacement.png',
                         'title' => 'Sample post ' . $i,
                         'author' => 'John Doe',
+                        'author_url' => '#',
                         'publish_date' =>  date( get_option( 'date_format' ), time() ),
                         'status' => 'Published',
+                        'overall_rating' => $i,
                     );
                 }
             }
@@ -539,7 +540,7 @@ class tdb_posts_list_utils {
 
 
 			/* -- Check if we have any posts to display -- */
-			if( empty( $posts ) ) {
+			if( empty( $posts ) || ( $is_composer && $options['showInComposer'] == 'no_posts' ) ) {
 				$buffy .= '<div class="tdb-s-notif tdb-s-notif-info"><div class="tdb-s-notif-descr">';
 					if( $search_keyword != '' ) {
 						$buffy .= __td( 'No search results.', TD_THEME_NAME );
@@ -755,12 +756,14 @@ class tdb_posts_list_utils {
 
 		/* -- Render the add new post button -- */
 		if( $main_form_url != '' ) {
-			if( $is_current_user_admin || !$options['addNewPostLimitReached'] ) {
+			if( ( $is_current_user_admin || !$options['addNewPostLimitReached'] ) && !( $is_composer && $options['showNotifInComposer'] == 'yes' ) ) {
 				$buffy .= '<a class="tdb-s-btn tdb-plst-add" href="' . esc_url($main_form_url) . '">' . $main_form_add_txt . '</a>';
 			} else {
 				$buffy .= $limit_notif;
 			}
-		}
+		} else if( $is_composer && $options['showNotifInComposer'] == 'yes' ) {
+            $buffy .= $limit_notif;
+        }
 
 
 		return $buffy;

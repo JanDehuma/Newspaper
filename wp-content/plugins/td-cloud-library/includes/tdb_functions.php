@@ -618,8 +618,8 @@ add_action('tdc_loaded', function() {
                     $td_cpt = td_util::get_option('td_cpt');
 
                     // set post type search tpl
-                    if ( !empty( $td_cpt[$cpt]['search_tpl'] ) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl'], true ) ) {
-                        $template_id = td_global::tdb_get_template_id( $td_cpt[$cpt]['search_tpl'] );
+                    if ( !empty( $td_cpt[$cpt]['search_tpl' . $lang] ) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl' . $lang], true ) ) {
+                        $template_id = td_global::tdb_get_template_id( $td_cpt[$cpt]['search_tpl' . $lang] );
                     }
 
                 }
@@ -767,8 +767,8 @@ add_action('tdc_loaded', function() {
                     $td_cpt = td_util::get_option('td_cpt');
 
                     // read cpt archive template
-                    if ( !empty( $td_cpt[$post_type_object->name]['archive_tpl'] ) ) {
-                        $tdb_post_type_archive_template = $td_cpt[$post_type_object->name]['archive_tpl'];
+                    if ( !empty( $td_cpt[$post_type_object->name]['archive_tpl' . $lang] ) ) {
+                        $tdb_post_type_archive_template = $td_cpt[$post_type_object->name]['archive_tpl' . $lang];
                     }
 
                 }
@@ -1401,8 +1401,8 @@ function tdb_on_template_include( $original_template ) {
             $td_cpt = td_util::get_option('td_cpt');
 
             // set post type search tpl
-            if ( !empty( $td_cpt[$cpt]['search_tpl'] ) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl'], true ) ) {
-                $tdb_search_template = $td_cpt[$cpt]['search_tpl'];
+            if ( !empty( $td_cpt[$cpt]['search_tpl' . $lang] ) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl' . $lang], true ) ) {
+                $tdb_search_template = $td_cpt[$cpt]['search_tpl' . $lang];
             }
 
         }
@@ -1622,8 +1622,8 @@ function tdb_on_template_include( $original_template ) {
             $td_cpt = td_util::get_option('td_cpt');
 
             // read cpt archive template
-            if ( !empty( $td_cpt[$post_type_object->name]['archive_tpl'] ) ) {
-                $tdb_post_type_archive_template = $td_cpt[$post_type_object->name]['archive_tpl'];
+            if ( !empty( $td_cpt[$post_type_object->name]['archive_tpl' . $lang] ) ) {
+                $tdb_post_type_archive_template = $td_cpt[$post_type_object->name]['archive_tpl' . $lang];
             }
 
         }
@@ -1752,7 +1752,7 @@ add_filter( 'admin_head', function() {
         $tdb_globals['isAdmin'] = true;
     }
 
-    foreach (['tdcSavingHistory'] as $item) {
+    foreach (['tdcSavingHistory', 'tdcShowHiddenElements'] as $item) {
         $existing_val = td_util::get_option($item);
         $tdb_globals['globalSettings'][$item] = empty($existing_val) ? false : $existing_val;
     }
@@ -3038,8 +3038,8 @@ function td_show_search_template_menu() {
         $td_cpt = td_util::get_option('td_cpt');
 
         // set post type search tpl
-        if ( !empty($td_cpt[$cpt]['search_tpl']) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl'], true ) ) {
-            $cpt_search_tpl = $td_cpt[$cpt]['search_tpl'];
+        if ( !empty($td_cpt[$cpt]['search_tpl' . $lang]) && td_global::is_tdb_template( $td_cpt[$cpt]['search_tpl' . $lang], true ) ) {
+            $cpt_search_tpl = $td_cpt[$cpt]['search_tpl' . $lang];
         }
 
     }
@@ -3320,8 +3320,8 @@ function td_show_cpt_tax_template_menu($queried_object) {
         $td_cpt = td_util::get_option('td_cpt');
 
         // read cpt archive template
-        if ( !empty( $td_cpt[$queried_object_id]['archive_tpl'] ) ) {
-            $tdb_post_type_archive_template = $td_cpt[$queried_object_id]['archive_tpl'];
+        if ( !empty( $td_cpt[$queried_object_id]['archive_tpl' . $lang] ) ) {
+            $tdb_post_type_archive_template = $td_cpt[$queried_object_id]['archive_tpl' . $lang];
             if ( td_global::is_tdb_template($tdb_post_type_archive_template,true) ) {
                 $template_id = td_global::tdb_get_template_id($tdb_post_type_archive_template);
                 //$global_title = '<span class="tdb-template-el-global-checked">Global</span> ';

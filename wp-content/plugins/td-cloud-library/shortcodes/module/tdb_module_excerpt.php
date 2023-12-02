@@ -28,6 +28,9 @@ class tdb_module_excerpt extends tdb_module_template_part {
                 overflow-wrap: anywhere;
 				color: #767676;
 			}
+			.tdb_module_excerpt .td-element-style {
+			    z-index: -1;
+			}
 
 
 
@@ -174,14 +177,13 @@ class tdb_module_excerpt extends tdb_module_template_part {
 		/* -- Output the module element HTML -- */
         $buffy = '';
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
-
 		$buffy .= '<' . $excerpt_tag . '  class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= $post_excerpt;
 		$buffy .= '</' . $excerpt_tag . '>';
 

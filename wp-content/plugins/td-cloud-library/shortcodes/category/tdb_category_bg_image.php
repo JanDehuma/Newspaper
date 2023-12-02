@@ -28,17 +28,24 @@ class tdb_category_bg_image extends td_block {
     
                     /* @style_general_category_bg_image */
                     .tdb-featured-image-bg {
-                      background-color: #f1f1f1;
-                      background-position: center center;
-                      transform: translateZ(0);
+                        position: relative;
+                        background-color: #f1f1f1;
+                        background-position: center center;
+                        transform: translateZ(0);
                     }
                     
                     
                     /* @image */
                     .$unique_block_class .tdb-featured-image-bg {
                         background: url('@image');
-                        background-size: cover;
-                        background-repeat: no-repeat;
+                    }
+                    /* @background_size */
+                    .$unique_block_class .tdb-featured-image-bg {
+                        background-size: @background_size;
+                    }
+                    /* @background_repeat */
+                    .$unique_block_class .tdb-featured-image-bg {
+                        background-repeat: @background_repeat;
                     }
                     /* @image_alignment */
                     .$unique_block_class .tdb-featured-image-bg {
@@ -68,8 +75,7 @@ class tdb_category_bg_image extends td_block {
                     }
                     
                     /* @overlay_color */
-                    .$unique_block_class:after {
-                        content: '';
+                    .$unique_block_class .tdb-fibg-overlay {
                         position: absolute;
                         top: 0;
                         left: 0;
@@ -78,8 +84,7 @@ class tdb_category_bg_image extends td_block {
                         background-color: @overlay_color;
                     }
                     /* @overlay_gradient */
-                    .$unique_block_class:after {
-                        content: '';
+                    .$unique_block_class .tdb-fibg-overlay {
                         position: absolute;
                         top: 0;
                         left: 0;
@@ -170,15 +175,19 @@ class tdb_category_bg_image extends td_block {
         global $tdb_state_category;
 
 	    // image size
-        $category_image = $tdb_state_category->category_image->__invoke();
-        $default_image = $res_ctx->get_shortcode_att( 'default_image' );
-
-        if ( $category_image['background_image_src'] != '' ) {
-            $image_src = $category_image['background_image_src'];
-        } else {
-            $image_src = wp_get_attachment_image_url($default_image,'full');
-        }
+        $category_image = $tdb_state_category->category_image->__invoke( $res_ctx->get_atts() );
+        $image_src = $category_image['background_image_src'];
         $res_ctx->load_settings_raw( 'image', $image_src );
+
+        // image style
+        if( !empty( $image_src ) ) {
+            $background_style = $res_ctx->get_shortcode_att( 'image_style' );
+            $background_size = !empty( $background_style ) ? ( $background_style == 'repeat' || $background_style == 'no-repeat' ? 'auto' : $background_style ) : 'cover';
+            $res_ctx->load_settings_raw( 'background_size', $background_size );
+
+            $background_repeat = $background_style == 'repeat' ? 'repeat' : 'no-repeat';
+            $res_ctx->load_settings_raw( 'background_repeat', $background_repeat );
+        }
 
         // image alignment
         $image_alignment = $res_ctx->get_shortcode_att( 'image_alignment' );
@@ -293,12 +302,9 @@ class tdb_category_bg_image extends td_block {
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
         global $tdb_state_category;
-
 	    if ( !empty( tdb_state_template::get_template_type() ) && 'cpt_tax' === tdb_state_template::get_template_type() ) {
 		    $tdb_state_category->set_tax();
 	    }
-
-        $category_image = $tdb_state_category->category_image->__invoke();
 
         $buffy = ''; // output buffer
 
@@ -310,7 +316,12 @@ class tdb_category_bg_image extends td_block {
                 // get the js for this block
                 $buffy .= $this->get_block_js();
 
-                $buffy .= '<div class="tdb-featured-image-bg"></div>';
+
+                $buffy .= '<div class="tdb-featured-image-bg">';
+                    if( $this->get_att( 'overlay' ) != '' ) {
+                        $buffy .= '<div class="tdb-fibg-overlay"></div>';
+                    }
+                $buffy .= '</div>';
 
             $buffy .= '</div>';
 

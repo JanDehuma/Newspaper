@@ -13,6 +13,7 @@
  * @property tdb_method category_grid
  * @property tdb_method loop
  * @property tdb_method menu
+ * @property tdb_method list_menu
  * @property tdb_method term_description
  * @property tdb_method category_custom_field
  * @property tdb_method category_gallery
@@ -603,7 +604,7 @@ class tdb_state_category extends tdb_state_base {
 
 
         // post background featured image
-        $this->category_image = function () {
+        $this->category_image = function ( $atts ) {
 
 	        $dummy_data_array = array(
 		        'background_image_src' => TDB_URL . '/assets/images/td_meta_replacement.png'
@@ -619,8 +620,6 @@ class tdb_state_category extends tdb_state_base {
 	        );
 
 			// img src init
-	        $image = '';
-
 	        if ( self::is_tax() ) {
 
                 $term_meta_img = 'tdb_filter_image';
@@ -637,22 +636,27 @@ class tdb_state_category extends tdb_state_base {
 			        $image_data = wp_get_attachment_image_src( $term_meta_img_attachment_id, 'full' );
 
 			        if( $image_data ) {
-				        $image = $image_data[0];
+                        $data_array['background_image_src'] = esc_url( $image_data[0] );
 			        }
 
 		        }
 
 	        } else {
-		        $image = td_util::get_category_option( $this->category_obj->cat_ID, 'tdc_image' );
+                $data_array['background_image_src'] = td_util::get_category_option( $this->category_obj->cat_ID, 'tdc_image' );
 	        }
 
-	        if( $image != '' ) {
-		        $data_array['background_image_src'] = esc_url( $image );
-	        } else {
-		        if ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) {
-			        return $dummy_data_array;
-		        }
-	        }
+            if( $data_array['background_image_src'] == '' ) {
+                $default_image = isset( $atts['default_image'] ) ? $atts['default_image'] : '';
+                $default_image_data = wp_get_attachment_image_src( $default_image, 'full' );
+
+                if( $default_image_data ) {
+                    $data_array['background_image_src'] = esc_url( $default_image_data[0] );
+                }
+            }
+
+            if( empty( $data_array['background_image_src'] ) && ( tdc_state::is_live_editor_iframe() || tdc_state::is_live_editor_ajax() ) ) {
+                return $dummy_data_array;
+            }
 
 	        return $data_array;
 
@@ -1348,7 +1352,7 @@ class tdb_state_category extends tdb_state_base {
 
             if ( !$this->has_wp_query() ) {
                 $tdb_menu_instance = tdb_menu::get_instance( $atts );
-                add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 10, 2 );
+                add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 99999, 2 );
                 $wp_nav_menu = wp_nav_menu(
                     array(
                         'menu' => $menu_id,
@@ -1371,7 +1375,7 @@ class tdb_state_category extends tdb_state_base {
             $wp_query = $this->get_wp_query();
 
             $tdb_menu_instance = tdb_menu::get_instance( $atts );
-            add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 10, 2 );
+            add_filter( 'wp_nav_menu_objects', array ( $tdb_menu_instance, 'hook_wp_nav_menu_objects' ), 99999, 2 );
             $wp_nav_menu = wp_nav_menu(
                 array(
                     'menu' => $menu_id,
@@ -1392,6 +1396,47 @@ class tdb_state_category extends tdb_state_base {
             return $wp_nav_menu;
         };
 
+
+        // list menu
+        $this->list_menu = function ( $atts ) {
+            $menu_id = ( isset( $atts['menu_id'] ) and $atts['menu_id'] != '' ) ? $atts['menu_id'] : ( ! empty(get_theme_mod('nav_menu_locations')['header-menu'] ) ? get_theme_mod('nav_menu_locations')['header-menu'] : '' );
+//            var_dump($menu_id);
+
+            $depth = $atts['depth'];
+            // Menu display
+            $display = $atts['inline'];
+            $menu_display = $display  == 'yes' ? 'horizontal' : ( $display  != '' ? $display  : 'vertical' );
+
+            if ( !$this->has_wp_query() ) {
+
+                $wp_nav_menu = wp_nav_menu(
+                    array(
+                        'menu' => $menu_id,
+                        'walker' => new td_block_list_menu_accordion($atts),
+                        'depth' => $menu_display == 'horizontal' ? 1 : ( $depth != '' ? $depth : 0 ),
+                        'echo' => false,
+                    )
+                );
+
+                return $wp_nav_menu;
+            }
+
+            global $wp_query;
+            $template_wp_query = $wp_query;
+            $wp_query = $this->get_wp_query();
+
+            $wp_nav_menu = wp_nav_menu(
+                array(
+                    'menu' => $menu_id,
+                    'walker' => new td_block_list_menu_accordion($atts),
+                    'depth' => $menu_display == 'horizontal' ? 1 : ( $depth != '' ? $depth : 0 ),
+                    'echo' => false,
+                )
+            );
+
+            $wp_query = $template_wp_query;
+            return $wp_nav_menu;
+        };
 
         // taxonomy description
         $this->term_description = function () {
@@ -1477,6 +1522,7 @@ class tdb_state_category extends tdb_state_base {
             // Shortcode options
             $source = isset( $atts['source'] ) && $atts['source'] != '' ? $atts['source'] : '';
             $images_size = isset( $atts['images_size'] ) && $atts['images_size'] != '' ? $atts['images_size'] : 'td_1068x0';
+            $modal_images_size = isset( $atts['modal_imgs_size'] ) && $atts['modal_imgs_size'] != '' ? $atts['modal_imgs_size'] : 'td_1920x0';
 
 
             // Create an array with dummy images
@@ -1486,36 +1532,48 @@ class tdb_state_category extends tdb_state_base {
                     'alt' => '',
                     'title' => 'Sample gallery image 1',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 2,
                     'alt' => '',
                     'title' => 'Sample gallery image 2',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 3,
                     'alt' => '',
                     'title' => 'Sample gallery image 3',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 4,
                     'alt' => '',
                     'title' => 'Sample gallery image 4',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 5,
                     'alt' => '',
                     'title' => 'Sample gallery image 5',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 ),
                 array(
                     'id' => 6,
                     'alt' => '',
                     'title' => 'Sample gallery image 6',
                     'url' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'url_modal' => TDB_URL . '/assets/images/td_meta_replacement.png',
+                    'caption' => 'Sample caption'
                 )
             );
 
@@ -1594,6 +1652,22 @@ class tdb_state_category extends tdb_state_base {
                             $gallery_image['url'] = $image_info['src'];
                         }
 
+                        // Get the modal image URL
+                        if( td_util::get_option('tds_thumb_' . $modal_images_size ) != 'yes' ) {
+                            // The thumb size is disabled, so show a placeholder thumb
+                            $thumb_disabled_path = td_global::$get_template_directory_uri;
+                            if ( strpos( $images_size, 'td_' ) === 0 ) {
+                                $thumb_disabled_path = td_api_thumb::get_key( $images_size, 'no_image_path' );
+                            }
+
+                            $gallery_image['url_modal'] = $thumb_disabled_path . '/images/thumb-disabled/' . $modal_images_size . '.png';
+                        } else {
+                            // The thumbnail size is enabled in the panel, try to get the image
+                            $image_info = td_util::attachment_get_full_info( $gallery_image_id, $modal_images_size );
+
+                            $gallery_image['url_modal'] = $image_info['src'];
+                        }
+
                         $gallery_images[] = $gallery_image;
                     }
                 }
@@ -1660,7 +1734,7 @@ class tdb_state_category extends tdb_state_base {
             if ( !empty($this->post_type_obj) && $this->post_type_obj instanceof WP_Post_Type ) {
                 $page_number = intval( $this->get_wp_query()->get('paged') );
                 return array(
-                    'title' => $this->post_type_obj->label . ' Archive',
+                    'title' => $this->post_type_obj->label,
                     'page_number' => $page_number ?: 1,
                     'class' => 'tdb-tag-title'
                 );

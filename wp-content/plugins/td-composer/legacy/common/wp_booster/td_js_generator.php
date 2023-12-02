@@ -36,6 +36,9 @@ function td_js_generator() {
     td_js_buffer::add_variable('tds_more_articles_on_post_time_to_wait', td_util::get_option('tds_more_articles_on_post_pages_time_to_wait'));
     td_js_buffer::add_variable('tds_more_articles_on_post_pages_distance_from_top', intval(td_util::get_option('tds_more_articles_on_post_pages_distance_from_top')));
 
+    //used to verify if google recaptcha in active
+    td_js_buffer::add_variable('tds_captcha', td_util::get_option('tds_captcha'));
+
     // theme color - used for loading box
     $td_get_db_theme_color = td_util::get_option('tds_theme_color');
     if( !preg_match( '/^#[a-f0-9]{6}$/i', $td_get_db_theme_color ) ) {

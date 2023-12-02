@@ -4,7 +4,7 @@ Plugin Name: tagDiv Cloud Library
 Plugin URI: http://tagdiv.com
 Description: Access a huge collection of pre-made templates you can import on your website and customize on the frontend using the tagDiv Composer plugin.
 Author: tagDiv
-Version: 3.0 | built on 05.10.2023 12:50
+Version: 3.1 | built on 09.11.2023 13:19
 Author URI: http://tagdiv.com
 */
 
@@ -26,7 +26,7 @@ if ( tdb_version_check::is_active_theme_compatible() === false ) {
 define('TDB_CLOUD_LOCATION', 'live');
 
 //hash
-define('TD_CLOUD_LIBRARY', '58af2c94cc275a541409dcdc9b94a2b0');
+define('TD_CLOUD_LIBRARY', '34c58173fa732974ccb0ca4df5ede162');
 
 // the deploy mode: dev or deploy  - it's set to deploy automatically on deploy
 define('TDB_DEPLOY_MODE', 'deploy');
@@ -155,6 +155,89 @@ add_action( 'wp_head', 'tdb_on_admin_head1' );
 function tdb_on_admin_head1() {
     if (is_user_logged_in()) {
         echo '<script type="text/javascript">var tdbPluginUrl = "' . TDB_URL . '"</script>';
+    }
+}
+
+add_action( 'wp_head', 'tdb_add_js_variables' );
+function tdb_add_js_variables() {
+
+    //var_dump(is_singular( array( 'post' ) ));
+    if ( !td_util::is_mobile_theme() ) {
+        if ( is_user_logged_in() && current_user_can( 'manage_categories' ) && is_admin_bar_showing() ) {
+            if ( tdb_state_template::has_wp_query() ) {
+
+                global $tdb_state_single, $tdb_state_category, $tdb_state_author, $tdb_state_search, $tdb_state_date, $tdb_state_tag, $tdb_state_attachment, $td_woo_state_search_archive_product_page, $td_woo_state_archive_product_page, $td_woo_state_single_product_page;
+
+                $tdbLoadDataFromId = '';
+                switch ( tdb_state_template::get_template_type() ) {
+                    case 'single':
+                    case 'cpt':
+                        $tdbLoadDataFromId = $tdb_state_single->get_wp_query()->post->ID;
+                        break;
+
+                    case 'category':
+                    case 'cpt_tax':
+                        if ( $tdb_state_category->get_wp_query()->is_post_type_archive() ) {
+                            $tdbLoadDataFromId = $tdb_state_category->get_wp_query()->get('post_type');
+                        } else {
+                            $tdbLoadDataFromId = $tdb_state_category->get_wp_query()->queried_object_id;
+                        }
+                        break;
+
+                    case 'author':
+                        $tdbLoadDataFromId = $tdb_state_author->get_wp_query()->query_vars['author'];
+                        break;
+
+                    case 'search':
+                        $post_type = $tdb_state_search->get_wp_query()->get('post_type');
+                        $search_query = $tdb_state_search->get_wp_query()->get('s');
+                        if ( $post_type ) {
+                            $tdbLoadDataFromId = $search_query . '&tdbLoadDataPostType=' . $post_type;
+                        } else {
+                            $tdbLoadDataFromId = $search_query;
+                        }
+                        break;
+
+                    case 'date':
+                        $tdbLoadDataFromId = $tdb_state_date->get_wp_query()->query_vars['year'];
+                        break;
+
+                    case 'tag':
+                        $tdbLoadDataFromId = $tdb_state_tag->get_wp_query()->query_vars['tag_id'];
+                        break;
+
+                    case 'attachment':
+                        $tdbLoadDataFromId = $tdb_state_attachment->get_wp_query()->queried_object->ID;
+                        break;
+
+                    case 'woo_archive':
+                        if ( isset( $td_woo_state_archive_product_page->get_wp_query()->queried_object ) ) {
+                            $tdbLoadDataFromId = $td_woo_state_archive_product_page->get_wp_query()->queried_object->term_id;
+                        } else {
+                            $term = get_term_by('slug', $td_woo_state_archive_product_page->get_wp_query()->get('term'), $td_woo_state_archive_product_page->get_wp_query()->get('taxonomy') );
+                            $tdbLoadDataFromId = $term->term_id;
+                        }
+                        break;
+
+                    case 'woo_search_archive':
+                        $tdbLoadDataFromId = $td_woo_state_search_archive_product_page->get_wp_query()->query_vars['s'];
+                        break;
+
+                    case 'woo_product':
+                        $tdbLoadDataFromId = $td_woo_state_single_product_page->get_wp_query()->queried_object->ID;
+                        break;
+
+                    case 'woo_shop_base':
+                        $tdbLoadDataFromId = wc_get_page_id('shop');
+                        break;
+                }
+
+                if ( !empty( $tdbLoadDataFromId ) ) {
+                    td_js_buffer::add_variable( 'tdbLoadDataFromId', $tdbLoadDataFromId );
+                }
+
+            }
+        }
     }
 }
 

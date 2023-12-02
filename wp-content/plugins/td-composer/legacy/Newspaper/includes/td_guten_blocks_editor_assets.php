@@ -55,8 +55,9 @@ function td_guten_blocks_assets() {
 				'wp-components',
 				'wp-date',
 				'wp-compose',
-				'wp-hooks'
-			), // Dependencies, defined above.
+				'wp-hooks',
+                'lodash'
+            ), // Dependencies, defined above.
 			TD_COMPOSER,
 			true
 		);
@@ -73,8 +74,9 @@ function td_guten_blocks_assets() {
 				'wp-components',
 				'wp-date',
 				'wp-compose',
-				'wp-hooks'
-			), // Dependencies, defined above.
+				'wp-hooks',
+                'lodash'
+            ), // Dependencies, defined above.
 			TD_COMPOSER,
 			true
 		);

@@ -3411,11 +3411,11 @@ class td_demo_data extends td_demo_base {
         /* -- Import the field group.  -- */
         // Bail if a field group with the same key already exists.
         if( !empty( acf_get_raw_field_group( $field_group_data['key'] ) ) ) {
-            self::error(
-                __CLASS__,
-                __FUNCTION__,
-                'Failed to import ACF field group: ' . $file . '. Field group already exists.'
-            );
+            //self::error(
+            //    __CLASS__,
+            //    __FUNCTION__,
+            //    'Failed to import ACF field group: ' . $file . '. Field group already exists.'
+            //);
             return false;
         }
 
@@ -3499,11 +3499,11 @@ class td_demo_data extends td_demo_base {
         /* -- Import the post type.  -- */
         // Bail if the post type already exists.
         if( post_type_exists( $post_type_data['post_type'] ) ) {
-            self::error(
-                __CLASS__,
-                __FUNCTION__,
-                'Failed to import ACF custom post type ' . $file . '. Custom post type already exists.'
-            );
+            //self::error(
+            //    __CLASS__,
+            //    __FUNCTION__,
+            //    'Failed to import ACF custom post type ' . $file . '. Custom post type already exists.'
+            //);
             return false;
         }
 
@@ -3587,11 +3587,11 @@ class td_demo_data extends td_demo_base {
         /* -- Import the taxonomy.  -- */
         // Bail if the custom taxonomy already exists.
         if( taxonomy_exists( $taxonomy_data['taxonomy'] ) ) {
-            self::error(
-                __CLASS__,
-                __FUNCTION__,
-                'Failed to import ACF custom taxonomy: ' . $file . '. Custom taxonomy already exists.'
-            );
+            //self::error(
+            //    __CLASS__,
+            //    __FUNCTION__,
+            //    'Failed to import ACF custom taxonomy: ' . $file . '. Custom taxonomy already exists.'
+            //);
             return false;
         }
 

@@ -386,8 +386,8 @@ function tdc_on_load_font_icon() {
 
 	// td hook - used to updated icon fonts (used in check_header and check_footer)
 	$icon_fonts = apply_filters( 'td_filter_icon_fonts', $post_icon_fonts );
-	
-	// fatal error if $icon_fonts is string
+
+    // fatal error if $icon_fonts is string
     if (empty($icon_fonts)) {
         $icon_fonts = array();
     }
@@ -499,9 +499,11 @@ if ( ! tdc_state::is_live_editor_iframe() && ! tdc_state::is_live_editor_ajax() 
             'permalinkStructure' => get_option('permalink_structure'),
 
             'lang' => '',
+
+            'deployMode' => TD_DEPLOY_MODE,
 		);
 
-	    foreach (['tdcSavingHistory'] as $item) {
+	    foreach (['tdcSavingHistory', 'tdcShowHiddenElements'] as $item) {
             $existing_val = td_util::get_option($item);
             $tdc_admin_settings['globalSettings'][$item] = empty($existing_val) ? false : $existing_val;
         }
@@ -969,7 +971,7 @@ function tdc_on_admin_head() {
 	);
 
 
-    foreach (['tdcSavingHistory'] as $item) {
+    foreach (['tdcSavingHistory', 'tdcShowHiddenElements'] as $item) {
         $existing_val = td_util::get_option($item);
         $tdc_admin_settings['globalSettings'][$item] = empty($existing_val) ? false : $existing_val;
     }

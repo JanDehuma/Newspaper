@@ -550,6 +550,11 @@ class tdm_block_inline_image extends td_block {
                 if( $video_popup_ad['code'] != '' ) {
                     $video_popup_data .= ' data-video-rec="' . base64_encode( json_encode($video_popup_ad) ) . '"';
                 }
+
+                if( TD_THEME_NAME == "Newspaper" ) {
+                    // load js
+                    td_resources_load::render_script( TDC_SCRIPTS_URL . '/tdAjaxVideoModal.js' . TDC_SCRIPTS_VER, 'tdAjaxVideoModal-js', '', 'footer');
+                }
             }
 
         }

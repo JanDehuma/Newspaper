@@ -136,6 +136,7 @@ This file is loaded on all the wp-admin pages - including the TD composer wrappe
 .tdc-ico-tdb_single_date,
 .tdc-ico-tdb_attachment_date,
 .tdc-ico-tdb_single_modified_date,
+.tdc-ico-tdb_single_age,
 .tdc-ico-tdb_module_date {
   background-position: -5px -175px !important;
   width: 40px;

@@ -2257,7 +2257,7 @@ class td_ajax {
 
             // check also captcha score result - default is 0.5
             if ( $captcha_response->success && $captcha_response->score >= $captcha_score ) {
-                $data['success'] = $captcha_response['success'];
+                $data['success'] = $captcha_response->success;
 
             } elseif ( $captcha_response->success && $captcha_response->score < $captcha_score ) {
                 $data['success'] = false;

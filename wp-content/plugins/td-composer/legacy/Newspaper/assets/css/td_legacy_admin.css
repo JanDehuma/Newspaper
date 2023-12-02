@@ -515,6 +515,11 @@
   width: 40px;
   height: 24px;
 }
+.tdc-ico-td_block_delete_bookmarks {
+  background-position: -555px -107px;
+  width: 40px;
+  height: 24px;
+}
 .tdc-preset-values-list .tdcp_separator {
   pointer-events: none;
   border-bottom: 1px solid #ebebeb;

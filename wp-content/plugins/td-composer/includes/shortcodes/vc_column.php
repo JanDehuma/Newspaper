@@ -250,6 +250,8 @@ class vc_column extends tdc_composer_block {
             'hide_for_user_type' => '',
             'logged_plan_id' => '',
             'author_plan_id' => '',
+
+            'tdc_css' => ''
 		), $atts);
 
 
@@ -296,17 +298,73 @@ class vc_column extends tdc_composer_block {
 		global $td_column_count;
 		$td_column_count = $this->atts['width'];
 
+
+        /* --
+        -- Sticky sidebar.
+        -- */
         $is_sticky = false;
         $sticky_offset = '20';
-		if ( ! empty( $this->atts['is_sticky'] ) ) {
+        $sticky_is_width_auto = array(false, false, false, false);
+
+		if ( !empty( $this->atts['is_sticky'] ) ) {
 			$td_pb_class .= ' td-is-sticky';
 
-            if ( ! empty( $this->atts['sticky_offset'] ) ) {
+            /* -- Offset. -- */
+            if ( !empty( $this->atts['sticky_offset'] ) ) {
                 $sticky_offset = $this->atts['sticky_offset'];
             }
 
+            /* -- Check if the column has width 'auto' on any of the viewports. -- */
+            // First check for the 'width' option in the 'CSS' tab.
+            $tdc_css = $this->atts['tdc_css'];
+            $tdc_css_decoded = json_decode( base64_decode( $tdc_css ) );
+            if( !empty( $tdc_css_decoded ) ) {
+                if( property_exists($tdc_css_decoded, 'all') && property_exists($tdc_css_decoded->all, 'width') && $tdc_css_decoded->all->width === 'auto' ) {
+                    $sticky_is_width_auto = array(true, true, true, true);
+                }
+                if( property_exists($tdc_css_decoded, 'landscape') && property_exists($tdc_css_decoded->landscape, 'width') ) {
+                    $sticky_is_width_auto[2] = $tdc_css_decoded->landscape->width === 'auto';
+                }
+                if( property_exists($tdc_css_decoded, 'portrait') && property_exists($tdc_css_decoded->portrait, 'width') ) {
+                    $sticky_is_width_auto[1] = $tdc_css_decoded->portrait->width === 'auto';
+                }
+                if( property_exists($tdc_css_decoded, 'phone') && property_exists($tdc_css_decoded->phone, 'width') ) {
+                    $sticky_is_width_auto[0] = $tdc_css_decoded->phone->width === 'auto';
+                }
+            }
+
+            // Next check for the 'Flex width' option, which should have higher
+            // priority than the previous one.
+            $flex_width = $this->atts['flex_width'];
+            if( !empty( $flex_width ) ) {
+                if( $flex_width === 'auto' ) {
+                    $sticky_is_width_auto = array(true, true, true, true);
+                } else {
+                    $flex_width_decoded = json_decode( base64_decode( $flex_width ) );
+
+                    if( !empty( $flex_width_decoded ) ) {
+                        if (property_exists($flex_width_decoded, 'all') && $flex_width_decoded->all === 'auto') {
+                            $sticky_is_width_auto = array(true, true, true, true);
+                        }
+                        if (property_exists($flex_width_decoded, 'landscape')) {
+                            $sticky_is_width_auto[2] = $flex_width_decoded->landscape === 'auto';
+                        }
+                        if (property_exists($flex_width_decoded, 'portrait')) {
+                            $sticky_is_width_auto[1] = $flex_width_decoded->portrait === 'auto';
+                        }
+                        if (property_exists($flex_width_decoded, 'phone')) {
+                            $sticky_is_width_auto[0] = $flex_width_decoded->phone === 'auto';
+                        }
+                    }
+                }
+            }
+
+            $sticky_is_width_auto = base64_encode( json_encode( $sticky_is_width_auto ) );
+
+            /* -- Set the $is_sticky flag. -- */
             $is_sticky = true;
 
+            /* -- Load the required script if we are in Newspaper. -- */
             if( TD_THEME_NAME == "Newspaper" ) {
                 td_resources_load::render_script( TDC_SCRIPTS_URL . '/tdSmartSidebar.js' . TDC_SCRIPTS_VER, 'tdSmartSidebar-js', '', 'footer' );
             }
@@ -345,7 +403,7 @@ class vc_column extends tdc_composer_block {
 			// get_block_css is out of wpb_wrapper for FF
 			$buffy .= $this->get_block_css();
 
-				$buffy .= '<div class="wpb_wrapper" ' . ( ( $is_sticky && TD_THEME_NAME == 'Newspaper' ) ? 'data-sticky-offset="' . $sticky_offset . '"' : '' ) . '>';
+				$buffy .= '<div class="wpb_wrapper" ' . ( ( $is_sticky && TD_THEME_NAME == 'Newspaper' ) ? 'data-sticky-offset="' . $sticky_offset . '" data-sticky-is-width-auto="' . $sticky_is_width_auto . '"' : '' ) . '>';
 					$buffy .= $this->do_shortcode($content);
 				$buffy .= '</div>';
 		$buffy .= '</div>';

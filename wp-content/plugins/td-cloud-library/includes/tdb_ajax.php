@@ -1492,6 +1492,11 @@ function tdb_get_single_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -1515,7 +1520,7 @@ function tdb_get_single_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=single' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=single' )
             );
         }
 
@@ -1874,6 +1879,11 @@ function tdb_get_category_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -1897,7 +1907,7 @@ function tdb_get_category_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=category' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=category' )
             );
         }
 
@@ -2010,6 +2020,11 @@ function tdb_get_404_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -2033,7 +2048,7 @@ function tdb_get_404_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=404' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=404' )
             );
         }
 
@@ -2259,6 +2274,11 @@ function tdb_get_date_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -2283,7 +2303,7 @@ function tdb_get_date_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=date' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=date' )
             );
         }
 
@@ -2364,8 +2384,8 @@ function tdb_get_search_templates() {
             // get cpts options
             $td_cpt = td_util::get_option('td_cpt');
 
-            if ( !empty($td_cpt[$cpt->name]['search_tpl']) ) {
-                $search_template_id = $td_cpt[$cpt->name]['search_tpl'];
+            if ( !empty($td_cpt[$cpt->name]['search_tpl' . $lang]) ) {
+                $search_template_id = $td_cpt[$cpt->name]['search_tpl' . $lang];
 
                 if ( td_global::is_tdb_template( $search_template_id, true ) ) {
                     $tdb_template_id = td_global::tdb_get_template_id( $search_template_id );
@@ -2488,6 +2508,11 @@ function tdb_get_search_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -2512,7 +2537,7 @@ function tdb_get_search_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=search' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=search' )
             );
         }
 
@@ -2747,6 +2772,11 @@ function tdb_get_woo_product_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -2771,7 +2801,7 @@ function tdb_get_woo_product_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=woo_product' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=woo_product' )
             );
         }
 
@@ -3168,6 +3198,11 @@ function tdb_get_woo_archive_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -3192,7 +3227,7 @@ function tdb_get_woo_archive_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=woo_archive' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=woo_archive' )
             );
         }
 
@@ -3362,6 +3397,11 @@ function tdb_get_woo_search_archive_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -3386,7 +3426,7 @@ function tdb_get_woo_search_archive_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=woo_search_archive' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=woo_search_archive' )
             );
         }
 
@@ -3556,6 +3596,11 @@ function tdb_get_woo_shop_base_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -3580,7 +3625,7 @@ function tdb_get_woo_shop_base_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=woo_shop_base' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=woo_shop_base' )
             );
         }
 
@@ -3736,6 +3781,11 @@ function tdb_get_attachment_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -3760,7 +3810,7 @@ function tdb_get_attachment_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=attachment' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=attachment' )
             );
         }
 
@@ -4034,6 +4084,11 @@ function tdb_get_author_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -4058,7 +4113,7 @@ function tdb_get_author_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=author' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=author' )
             );
         }
 
@@ -4422,6 +4477,11 @@ function tdb_get_tag_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -4446,7 +4506,7 @@ function tdb_get_tag_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=tag' )
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=tag' )
             );
         }
 
@@ -6450,10 +6510,10 @@ function on_ajax_tdb_ct_get_tpl_card_data() {
         $single_tpl_option_id = 'td_default_site_post_template' . $lang;
 
         // cpt global search template option id
-        $search_tpl_option_id = 'search_tpl';
+        $search_tpl_option_id = 'search_tpl' . $lang;
 
         // cpt global archive template option id
-        $archive_tpl_option_id = 'archive_tpl';
+        $archive_tpl_option_id = 'archive_tpl' . $lang;
 
         // get all cpts
 		$cpts = td_util::get_cpts();
@@ -6610,6 +6670,22 @@ function get_tpl_card_data_assets( $tpl_type, $wp_cpt_name = '' ) {
             $post_types = get_post_types( array( '_builtin' => false ) );
 
             if ( in_array( $wp_cpt_name, $post_types ) ) {
+
+                $card_tpl_data_arr['card_tpl_data'] = [
+                    'single' => [
+                        'data_id' => '',
+                        'data_view_link' => ''
+                    ],
+                    'search' => [
+                        'data_id' => 'a',
+                        'data_view_link' => add_query_arg( array( 'post_type' => $wp_cpt_name ), get_search_link('a') )
+                    ],
+                    'archive' => [
+                        'data_id' => $wp_cpt_name,
+                        'data_view_link' => get_post_type_archive_link($wp_cpt_name)
+                    ]
+                ];
+
                 $taxonomies = get_object_taxonomies( $wp_cpt_name, 'objects' );
                 if ( $taxonomies ) {
                     $card_tpl_data_arr['card_tpl_data_tax'] = $taxonomies;
@@ -6651,7 +6727,7 @@ function get_tpl_card_data_assets( $tpl_type, $wp_cpt_name = '' ) {
 		case 'category':
 			$categories = get_categories(
                 array(
-	                //'hide_empty' => false,
+	                'hide_empty' => false,
                     'number' => 1
                 )
             );
@@ -6668,7 +6744,8 @@ function get_tpl_card_data_assets( $tpl_type, $wp_cpt_name = '' ) {
 		case 'tag':
 			$tags = get_tags(
                 array(
-                    'number' => 1
+                    'number' => 1,
+                    'hide_empty' => false
                 )
             );
 			if ( $tags ) {
@@ -6799,7 +6876,12 @@ function get_tpl_card_data_assets( $tpl_type, $wp_cpt_name = '' ) {
 
             // set card data id to a term from the current att tax
             if ( !empty( $att_data ) ) {
-	            $att_terms = get_terms( $att_data['wc_attribute_taxonomy_name'] );
+	            $att_terms = get_terms(
+                    array(
+                        'taxonomy' => $att_data['wc_attribute_taxonomy_name'],
+                        'hide_empty' => false
+                    )
+                );
 
 	            if ( $att_terms ) {
 		            $card_data_id = $att_terms[0]->term_id;
@@ -6823,7 +6905,8 @@ function get_tpl_card_data_assets( $tpl_type, $wp_cpt_name = '' ) {
             $tax_terms = get_terms(
                 array(
                     'taxonomy' => $cpt_tax_name,
-                    'number' => 1
+                    'number' => 1,
+                    'hide_empty' => false
                 )
             );
 
@@ -7207,6 +7290,35 @@ function tdc_wm_global_settings_update() {
 	die( json_encode( $reply ) );
 }
 
+// update global setting
+add_action( 'wp_ajax_tdc_wm_global_setting_update', 'tdc_wm_global_setting_update' );
+function tdc_wm_global_setting_update() {
+
+    $reply = array();
+
+    // die if request is fake
+    check_ajax_referer( 'td-update-panel', 'td_magic_token' );
+
+    // if user is logged in and can switch themes
+    // @note this should remain restricted to admins only as it can update any of theme's options
+    if ( !current_user_can('switch_themes') ) {
+        $reply['error'] = 'You have no permission to access this endpoint.';
+        die( json_encode( $reply ) );
+    }
+
+    // check post data
+    $setting_name = $_POST['settingName'];
+    $setting_value = $_POST['settingValue'];
+
+    // update setting
+    td_util::update_option( $setting_name, $setting_value );
+
+    // return success message
+    $reply['success'] = true;
+    die( json_encode( $reply ) );
+
+}
+
 
 /*
  * cpt_tax/cpt templates > ajax callbacks
@@ -7395,10 +7507,10 @@ function on_ajax_tdb_cpt_get_all() {
     $single_tpl_option_id = 'td_default_site_post_template' . $lang;
 
     // cpt global search template option id
-    $search_tpl_option_id = 'search_tpl';
+    $search_tpl_option_id = 'search_tpl' . $lang;
 
     // cpt global archive template option id
-    $archive_tpl_option_id = 'archive_tpl';
+    $archive_tpl_option_id = 'archive_tpl' . $lang;
 
     foreach ( $cpts as $cpt ) {
         $templates[$cpt->name]['templates'] = $tpls_cpt;
@@ -7644,7 +7756,7 @@ function tdb_assign_cpt_template_global() {
     switch ( $option ) {
         case 'search_tpl':
         case 'archive_tpl':
-            $option_id = $option;
+            $option_id = $option . $lang;
             break;
         case 'single_tpl':
             $option_id = 'td_default_site_post_template' . $lang;
@@ -8071,6 +8183,11 @@ function tdb_get_cpt_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
     $args = array(
         'post_type' => array('tdb_templates'),
         'post_status' => 'publish',
@@ -8095,7 +8212,7 @@ function tdb_get_cpt_mobile_templates() {
             $reply[] = array(
                 'template_id' => $post->ID,
                 'template_title' => $post->post_title,
-                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=cpt')
+                'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=cpt')
             );
         }
 
@@ -8297,6 +8414,11 @@ function tdb_get_cpt_tax_mobile_templates() {
 		die( json_encode( $reply ) );
 	}
 
+    $tdbLoadDataFromId = '';
+    if( !empty( $_POST['tdbLoadDataFromId'] ) ) {
+        $tdbLoadDataFromId = '&tdbLoadDataFromId=' . $_POST['tdbLoadDataFromId'];
+    }
+
 	$args = array(
 		'post_type' => array('tdb_templates'),
 		'post_status' => 'publish',
@@ -8321,7 +8443,7 @@ function tdb_get_cpt_tax_mobile_templates() {
 			$reply[] = array(
 				'template_id' => $post->ID,
 				'template_title' => $post->post_title,
-				'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc&tdbTemplateType=cpt_tax')
+				'template_url' => admin_url( 'post.php?post_id=' . $post->ID . '&td_action=tdc' . $tdbLoadDataFromId . '&tdbTemplateType=cpt_tax')
 			);
 		}
 
@@ -9553,6 +9675,11 @@ function tdb_posts_form_on_submit() {
                                 case 'radio':
                                 case 'button_group':
                                     $final_field_value = $acf_field_value['label'];
+
+                                    break;
+
+                                case 'textarea':
+                                    $final_field_value = urldecode($acf_field_value);
 
                                     break;
 

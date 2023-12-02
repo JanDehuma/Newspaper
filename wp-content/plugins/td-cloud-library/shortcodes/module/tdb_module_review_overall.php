@@ -22,6 +22,9 @@ class tdb_module_review_overall extends tdb_module_template_part {
 				position: relative;
 				margin: 0;
 			}
+			.tdb_module_review_overall .td-element-style {
+			    z-index: -1;
+			}
 			.tdb_module_review_overall .tdb-muro-label {
 				margin-left: 12px;
 				font-family: -apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif;
@@ -350,14 +353,14 @@ class tdb_module_review_overall extends tdb_module_template_part {
 			return $buffy;
 		}
 
-		// get the block css
-		$buffy .= $this->get_block_css();
-
-		// get the js for this block
-		$buffy .= $this->get_block_js();
-
 
 		$buffy .= '<div class="' . $this->get_block_classes($additional_classes_array) . '" ' . $this->get_block_html_atts() . '>';
+            // get the block css
+            $buffy .= $this->get_block_css();
+
+            // get the js for this block
+            $buffy .= $this->get_block_js();
+
 			$buffy .= td_util::display_user_ratings_stars($reviews_average, $full_star_icon_html, $full_star_icon_data, $half_star_icon_html, $half_star_icon_data, $empty_star_icon_html, $empty_star_icon_data);
 			$buffy .= '<div class="tdb-muro-label">' . $reviews_average . ' ' . __td( 'out of 5', TD_THEME_NAME )  . '</div>';
 		$buffy .= '</div>';
